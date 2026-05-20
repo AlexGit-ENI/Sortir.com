@@ -8,16 +8,12 @@
 
         <h1>Toutes les sorties à venir</h1>
 
-        <form action="" method="get" id="event-search" class="search-form">
-
-            <p>
-                <label for="site">Ville : </label>
-                <input type="text" name="site" class="form-control" value="{{ site }}">
-           </p>
-
-            <input type="submit" class="action-btn" value="Rechercher">
-
-        </form>
+        <!-- filtre par site -->
+        {# ajouter un bouton HTML simple au lieu d'un créé avec le fomr pour qu'il ne figure pas dans l'URL  #}
+        {{ form_start(siteSelectForm) }}
+        {{ form_row(siteSelectForm.site) }}
+        <button type="submit">Search</button>
+        {{ form_end(siteSelectForm) }}
 
         <div id="sortie-list">
             {% if sorties %}
@@ -28,6 +24,7 @@
                         <div class="sortie-meta">
                             <p><i>📆 </i><time>{{ sortie.dateHeureDebut | format_datetime('full', 'medium', locale='fr') }}</time></p>
                             <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
+                            <p>Organisée par le site de : {{ sortie.site.nom }}</p>
                             <p> Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
                         </div>
                         <p>
