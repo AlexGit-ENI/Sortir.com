@@ -8,6 +8,17 @@
 
         <h1>Toutes les sorties à venir</h1>
 
+        <form action="" method="get" id="event-search" class="search-form">
+
+            <p>
+                <label for="site">Ville : </label>
+                <input type="text" name="site" class="form-control" value="{{ site }}">
+           </p>
+
+            <input type="submit" class="action-btn" value="Rechercher">
+
+        </form>
+
         <div id="sortie-list">
             {% if sorties %}
                 {% for sortie in sorties %}
