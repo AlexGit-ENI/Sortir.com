@@ -1,0 +1,22 @@
+<header>
+    <nav>
+        <ul>
+
+                        {% if is_granted('ROLE_ADMIN') %}
+            {#            <li><a href="{{ path('Villes') }}">Villes</a></li>#}
+            <li><a href="{{ path('sorties_list') }}">Sites</a></li>
+                        {% endif %}
+
+
+
+            <li><a href="{{ path('sorties_list') }}">Accueil</a></li>
+            <li><a href="{{ path('participant_upload') }}">Mon Profil</a></li>
+            <li><a href="{{ path('app_login') }}">Se déconnecter</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+{#Changement des routes : Sites, villes, Accueil#}
+{#is_granted ADMIN/USER à modifier #}
+
