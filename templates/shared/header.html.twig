@@ -1,0 +1,35 @@
+<header>
+    <div>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ path('sorties_list') }}">
+        <img class="header-logo"
+         src="{{ asset('images/sortir_com_logo.svg') }}"
+         alt="Logo de Sortir.com"
+         width="250"
+         height="250">
+         </a>
+         {% endif %}
+
+
+    </div>
+    <nav>
+        <li>
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('app_villes') }}">Villes</a></li>
+                        <li><a href="{{ path('sorties_list') }}">Sites</a></li>
+                        {% endif %}
+
+
+
+            <li><a href="{{ path('sorties_list') }}">Accueil</a></li>
+            <li><a href="{{ path('participant_upload') }}">Mon Profil</a></li>
+            <li><a href="{{ path('app_login') }}">Se déconnecter</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+{#Changement des routes : Sites, villes, Accueil#}
+{#is_granted ADMIN/USER à modifier #}
+

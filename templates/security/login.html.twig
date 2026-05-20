@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com - Connexion{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="login-container">
+        <h1>Connexion</h1>
+
+        {% if error %}
+            <div class="error-message">
+            Identifiants incorrets, veuillez réessayer.
+            </div>
+        {% endif %}
+
+        <form action="{{ path('app_login') }}" method="post">
+            <div class="form-group">
+                <label for="username">Identifiant</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="_username"
+                    value="{{ last_username }}"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="_password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="remember_me" name="_remember_me">
+                <label for="remember_me">Se souvenir de moi</label>
+            </div>
+
+            <div class="Mot de passe oublié">
+
+                <a href="{{ path('app_login') }}">Mot de passe oublié ?</a>
+
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="btn-login">Se connecter</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les sorties{% endblock %}
+
+{% block body %}
+
+    <main>
+
+        <h1>Toutes les sorties à venir</h1>
+
+        <!-- filtre par site -->
+        {# ajouter un bouton HTML simple au lieu d'un créé avec le fomr pour qu'il ne figure pas dans l'URL  #}
+        {{ form_start(siteSelectForm) }}
+        {{ form_row(siteSelectForm.site) }}
+        <button type="submit">Search</button>
+        {{ form_end(siteSelectForm) }}
+
+        <div id="sortie-list">
+            {% if sorties %}
+                {% for sortie in sorties %}
+
+                    <article class="sortie-article">
+                        <h2>{{ sortie.nom }}</h2>
+                        <div class="sortie-meta">
+                            <p><i>📆 </i><time>{{ sortie.dateHeureDebut | format_datetime('full', 'medium', locale='fr') }}</time></p>
+                            <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
+                            <p>Organisée par le site de : {{ sortie.site.nom }}</p>
+                            <p> Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
+                        </div>
+                        <p>
+                            {{ sortie.description }}
+                        </p>
+                    </article>
+
+                {% endfor %}
+            {% else %}
+                <p>Aucune sortie n'a été trouvée</p>
+            {% endif %}
+
+        </div>
+
+    </main>
+
+{% endblock %}
