@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
@@ -34,6 +36,21 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'listeSortiesCrees')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $organisateur = null;
+
+    /**
+     * @var Collection<int, Participant>
+     */
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSorties')]
+    private Collection $listeParticipants;
+
+    public function __construct()
+    {
+        $this->listeParticipants = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +137,42 @@ class Sortie
     public function setSite(?Site $site): static
     {
         $this->site = $site;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getListeParticipants(): Collection
+    {
+        return $this->listeParticipants;
+    }
+
+    public function addListeParticipant(Participant $listeParticipant): static
+    {
+        if (!$this->listeParticipants->contains($listeParticipant)) {
+            $this->listeParticipants->add($listeParticipant);
+        }
+
+        return $this;
+    }
+
+    public function removeListeParticipant(Participant $listeParticipant): static
+    {
+        $this->listeParticipants->removeElement($listeParticipant);
 
         return $this;
     }

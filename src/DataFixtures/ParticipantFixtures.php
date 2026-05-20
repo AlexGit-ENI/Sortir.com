@@ -29,6 +29,7 @@ class ParticipantFixtures extends Fixture
            $participant->setAdministrateur(true);
            $participant->setActif(true);
            $participant->setPassword($this->passwordHasher->hashPassword($participant, '1234'));
+           $this->addReference('admin', $participant);
            $manager->persist($participant);
            $manager->flush();
 
@@ -43,6 +44,7 @@ class ParticipantFixtures extends Fixture
            $participant->setAdministrateur(false);
            $participant->setActif(true);
            $participant->setPassword($this->passwordHasher->hashPassword($participant, '1234'));
+           $this->addReference('user', $participant);
            $manager->persist($participant);
            $manager->flush();
     }
