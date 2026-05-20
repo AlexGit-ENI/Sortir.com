@@ -2,13 +2,14 @@
     <div>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <a href="{{ path('sorties_list') }}">
-            {% endif %}
         <img class="header-logo"
          src="{{ asset('images/sortir_com_logo.svg') }}"
          alt="Logo de Sortir.com"
          width="250"
-         height="250"
-    >
+         height="250">
+         </a>
+         {% endif %}
+
 
     </div>
     <nav>
