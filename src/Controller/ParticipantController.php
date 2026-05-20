@@ -12,9 +12,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+#[Route('/profils', name: 'participant_')]
 final class ParticipantController extends AbstractController
 {
-    #[Route('/participant', name: 'app_participant')]
+    #[Route('/modifier', name: 'upload')]
     public function new(
         Request $request,
         ParticipantRepository $participantRepository,
@@ -37,6 +38,23 @@ final class ParticipantController extends AbstractController
 
         return $this->render('participant/index.html.twig', [
             'form' => $form
+        ]);
+    }
+
+    /*
+        Route pour la page profil d'un participant
+     */
+    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(int $id, ParticipantRepository $participantRepository): Response
+    {
+
+        $participant=$participantRepository->find($id);
+
+        // Pour le debug
+        // dd($movie);
+
+        return $this->render('participant/detail.html.twig', [
+            'participant' => $participant,
         ]);
     }
 //
