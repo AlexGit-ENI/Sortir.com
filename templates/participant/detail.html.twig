@@ -1,0 +1,11 @@
+{%  extends 'base.html.twig' %}
+
+{% block title %}
+    {{ participant.username }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ participant.username }}</h1>
+    <p>{{ participant.nom }}</p>
+    <p>{{ participant.prenom }}</p>
+{% endblock %}
