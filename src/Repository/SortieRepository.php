@@ -40,4 +40,16 @@ class SortieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findBySite(String $site)
+    {
+        $entityManager = $this->getEntityManager();
+        $querybuilder = $this->createQueryBuilder("sortie");
+        $querybuilder->leftJoin("sortie.site", "site");
+        $querybuilder->andWhere("site.nom = :site");
+        $querybuilder->setParameter("site", $site);
+        $querybuilder->addSelect("site");
+        $query = $querybuilder->getQuery();
+
+        return $query->getResult();
+    }
 }
