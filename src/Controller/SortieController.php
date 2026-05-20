@@ -33,10 +33,19 @@ final class SortieController extends AbstractController
 
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
         if($form->isSubmitted()) {
+
             $selectedSite = $request->query->get('site');
 
-            $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
+            if($selectedSite) {
+                $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
+            } else {
+                $sorties = $sortieRepository->findAll();
+                $this->redirectToRoute('list');
+            }
+
+
         }
+
 
 
         return $this->render('sortie/list.html.twig', [
