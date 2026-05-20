@@ -24,7 +24,8 @@
                         <div class="sortie-meta">
                             <p><i>📆 </i><time>{{ sortie.dateHeureDebut | format_datetime('full', 'medium', locale='fr') }}</time></p>
                             <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
-                            <p>Organisée par le site de : {{ sortie.site.nom }}</p>
+                            <p>Organisée par le site de : {{ sortie.site.nom }} - Organisateur : {{ sortie.organisateur.username }}</p>
+
                             <p> Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
                         </div>
                         <p>

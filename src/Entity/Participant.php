@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,24 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur', orphanRemoval: true)]
+    private Collection $listeSortiesCrees;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'listeParticipants')]
+    private Collection $listeSorties;
+
+    public function __construct()
+    {
+        $this->listeSortiesCrees = new ArrayCollection();
+        $this->listeSorties = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -198,6 +218,63 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getListeSortiesCrees(): Collection
+    {
+        return $this->listeSortiesCrees;
+    }
+
+    public function addListeSortiesCree(Sortie $listeSortiesCree): static
+    {
+        if (!$this->listeSortiesCrees->contains($listeSortiesCree)) {
+            $this->listeSortiesCrees->add($listeSortiesCree);
+            $listeSortiesCree->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeSortiesCree(Sortie $listeSortiesCree): static
+    {
+        if ($this->listeSortiesCrees->removeElement($listeSortiesCree)) {
+            // set the owning side to null (unless already changed)
+            if ($listeSortiesCree->getOrganisateur() === $this) {
+                $listeSortiesCree->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getListeSorties(): Collection
+    {
+        return $this->listeSorties;
+    }
+
+    public function addListeSorty(Sortie $listeSorty): static
+    {
+        if (!$this->listeSorties->contains($listeSorty)) {
+            $this->listeSorties->add($listeSorty);
+            $listeSorty->addListeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeSorty(Sortie $listeSorty): static
+    {
+        if ($this->listeSorties->removeElement($listeSorty)) {
+            $listeSorty->removeListeParticipant($this);
+        }
 
         return $this;
     }

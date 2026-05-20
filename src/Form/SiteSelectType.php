@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Repository\SiteRepository;
+use Doctrine\ORM\QueryBuilder;
 use phpDocumentor\Reflection\Types\String_;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,6 +32,10 @@ class SiteSelectType extends AbstractType
                 /* Les valeurs des options du select, ici j'ai récupéré tous les sites à partir du SiteRepository dans le controller
                 Puis les ai passé en paramètre dans le même controller
                 */
+                'query_builder' => function (SiteRepository $sr): QueryBuilder {
+                    return $sr->createQueryBuilder('s')
+                        ->orderBy('s.nom', 'ASC');
+                },
                 'choices' => $options['sites'],
                 'choice_label' => 'nom',
                 'placeholder' => 'Choisissez un site',
