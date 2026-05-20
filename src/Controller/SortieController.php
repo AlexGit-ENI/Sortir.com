@@ -35,18 +35,8 @@ final class SortieController extends AbstractController
         if($form->isSubmitted()) {
 
             $selectedSite = $request->query->get('site');
-
-            if($selectedSite) {
-                $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
-            } else {
-                $sorties = $sortieRepository->findAll();
-                $this->redirectToRoute('list');
-            }
-
-
+            $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
         }
-
-
 
         return $this->render('sortie/list.html.twig', [
             'siteSelectForm' => $form->createView(),
