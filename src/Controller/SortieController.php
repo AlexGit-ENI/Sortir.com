@@ -120,9 +120,26 @@ final class SortieController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Inscription confirmée ! Amusez-vous bien.');
             return $this->redirectToRoute('sorties_list');
-
-
-//            ROUTE A VERIFIER, OU REDIRECTION "sortie_list"
-    }
     }
 
+                                    // Se désister =>>>
+    #[Route('/{id}/desister', name: 'desister', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function desister(Sortie $sortie, EntityManagerInterface $em): Response
+    {
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+
+        if (!$sortie->getListeParticipants()->contains($participant)) {
+            $this->addFlash('warning', 'Vous n\'êtes pas inscrit à cette sortie.');
+            return $this->redirectToRoute('sorties_list');
+        }
+
+
+        $sortie->removeListeParticipant($participant);
+        $em->persist($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez bien été désinscrit de la sortie. Connard on est pas assez bien pour vous?');
+        return $this->redirectToRoute('sorties_list');
+    }
+}
