@@ -26,7 +26,7 @@
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <li><a href="{{ path('sorties_list') }}">Accueil</a></li>
             <li><a href="{{ path('participant_update', {id : app.user.id}) }}">Mon Profil</a></li>
-            <li><a href="{{ path('app_login') }}">Se déconnecter</a></li>
+            <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
             {% endif %}
         </ul>
     </nav>
