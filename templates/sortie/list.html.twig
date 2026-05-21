@@ -25,7 +25,8 @@
                             <p><i>📆 </i><time>{{ sortie.dateHeureDebut | format_datetime('full', 'medium', locale='fr') }}</time></p>
                             <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
                             <p>Organisée par le site de : {{ sortie.site.nom }} - Organisateur : {{ sortie.organisateur.username }}</p>
-
+                            <p>Lieu : {{ sortie.lieu.nom }}</p>
+                            <p>Ville : {{ sortie.lieu.ville.nom }}</p>
                             <p> Nombre de participants max : {{ sortie.nbInscriptionsMax }}</p>
                         </div>
 
