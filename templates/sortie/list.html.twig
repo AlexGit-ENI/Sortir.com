@@ -24,20 +24,22 @@
                         <div class="sortie-meta">
                             <p><i>📆 </i><time>{{ sortie.dateHeureDebut | format_datetime('full', 'medium', locale='fr') }}</time></p>
                             <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
-                            <p>Organisée par le site de : {{ sortie.site.nom }} - Organisateur : {{ sortie.organisateur.username }}</p>
+{#                            <p>Organisée par le site de : {{ sortie.site.nom }} - Organisateur : {{ sortie.organisateur.username }}</p>#}
 
-                            <p> Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
+                            <p> Nombre de participants max : {{ sortie.nbInscriptionsMax }}</p>
                         </div>
+
                         <p>
-                            {{ sortie.description }}
-                        </p>
+                            {{ sortie.description }}</p>
+                        <p> Nombre d'inscrits {{ sortie.listeParticipants|length }} </p>
+                        <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
+
                     </article>
 
                 {% endfor %}
             {% else %}
                 <p>Aucune sortie n'a été trouvée</p>
             {% endif %}
-
         </div>
 
     </main>

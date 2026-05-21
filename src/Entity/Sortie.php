@@ -176,4 +176,8 @@ class Sortie
 
         return $this;
     }
+
+    public function addParticipant(Participant $participant)
+    {
+    }
 }

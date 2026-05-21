@@ -22,9 +22,10 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie = new Sortie();
             $sortie->setNom($faker->words(3, true));
             $sortie->setDescription($faker->sentence(3, true));
-            $sortie->setDateHeureDebut(new \DateTime());
+            $date= $faker->dateTimeInInterval('', '+3 days');
+            $sortie->setDateHeureDebut($date);
             $sortie->setDuree(random_int(1, 4));
-            $sortie->setDateLimiteInscription(new \DateTime());
+            $sortie->setDateLimiteInscription($date);
             $sortie->setNbInscriptionsMax(random_int(4, 12));
             $sortie->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
             $sortie->setOrganisateur($this->getReference('admin', Participant::class));

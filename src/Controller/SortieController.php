@@ -9,6 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Participant;
+use App\Entity\Sortie;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/sorties', name: 'sorties_')]
 final class SortieController extends AbstractController
@@ -44,4 +47,45 @@ final class SortieController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
-}
+
+
+        #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
+        public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
+            $maxInscription = $sortie->getNbInscriptionsMax();
+            if (count($sortie->getListeParticipants()) >= $maxInscription) {
+                $this->addFlash('warning', 'Nombre d\'inscription dépassés'); {
+                    try {
+                        $sortie =$sortie->find($sortie->getListeParticipants()[0]);
+                    }
+                    catch (\Exception $e) {
+                        $this->addFlash('warning', 'Une erreur est survenue');
+                    }
+                }
+
+            }
+
+            /** @var Participant $participant */
+            $participant = $this->getUser();
+            if ($sortie->getListeParticipants()->contains($participant)) {
+
+                $this->addFlash('warning','Vous êtes actuellement inscrit.');
+                return $this->redirectToRoute('sorties_list');
+
+            }
+            if (new \DateTime() > $sortie->getDateLimiteInscription()) {
+                $this->addFlash('warning','La sortie n\'est plus disponible');
+                return $this->redirectToRoute('sorties_list');
+            }
+
+
+            $sortie->addListeParticipant($participant);
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('success', 'Inscription confirmée ! Amusez-vous bien.');
+            return $this->redirectToRoute('sorties_list');
+
+
+//            ROUTE A VERIFIER, OU REDIRECTION "sortie_list"
+    }
+    }
+
