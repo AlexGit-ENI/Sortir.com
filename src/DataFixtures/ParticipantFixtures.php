@@ -26,6 +26,7 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant = new Participant();
         $participant->setUsername('admin');
         $participant->setNom('ADMIN');
+        $participant->setRoles(['ROLE_ADMIN']);
         $participant->setPrenom('Stephane');
         $participant->setTelephone('0000000000');
         $participant->setMail('admin@admin.test');
