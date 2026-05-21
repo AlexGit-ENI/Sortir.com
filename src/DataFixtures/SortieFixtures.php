@@ -27,7 +27,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setDateLimiteInscription(new \DateTime());
             $sortie->setNbInscriptionsMax(random_int(4, 12));
             $sortie->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
-            $sortie->setOrganisateur($this->getReference('admin', Participant::class));
+            $sortie->setOrganisateur($this->getReference(ParticipantFixtures::$participantKeys[random_int(0, count(ParticipantFixtures::$participantKeys) - 1)], Participant::class));
             $manager->persist($sortie);
         }
 
@@ -36,6 +36,6 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [SiteFixtures::class];
+        return [SiteFixtures::class, ParticipantFixtures::class];
     }
 }

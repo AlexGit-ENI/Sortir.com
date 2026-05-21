@@ -233,6 +233,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSite(?Site $site): static
     {
         $this->site = $site;
+
+        return $this;
+    }
     /**
      * @return Collection<int, Sortie>
      */

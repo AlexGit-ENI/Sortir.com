@@ -16,8 +16,7 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
     public function __construct(UserPasswordHasherInterface $passwordHasher) {
         $this->passwordHasher = $passwordHasher;
     }
-
-
+    public static array $participantKeys = [];
     public function load(ObjectManager $manager): void
     {
 
@@ -34,6 +33,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant->setActif(true);
         $participant->setPassword($this->passwordHasher->hashPassword($participant, '1234'));
         $participant->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
+        static::$participantKeys[0] = $participant->getUsername();
+        $this->addReference(static::$participantKeys[0], $participant);
         $manager->persist($participant);
 
         ////////////////////////Participants///////////////////////////////
@@ -48,6 +49,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
             $participant->setActif(true);
             $participant->setPassword($this->passwordHasher->hashPassword($participant, '1234'));
             $participant->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
+            static::$participantKeys[$i] = $participant->getUsername();
+            $this->addReference(static::$participantKeys[$i], $participant);
             $manager->persist($participant);
 
         }
