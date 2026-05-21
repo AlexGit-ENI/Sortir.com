@@ -46,12 +46,10 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
     private ?Site $site = null;
 
     #[ORM\ManyToOne(inversedBy: 'listeSortiesCrees')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
     private ?Participant $organisateur = null;
 
     /**

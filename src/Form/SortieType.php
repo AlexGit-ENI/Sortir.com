@@ -66,22 +66,22 @@ class SortieType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
-            ->add('site', EntityType::class, [
-                'class' => Site::class,
-                'choice_label' => 'nom',
-                'multiple' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ]
-            ])
-            ->add('organisateur', EntityType::class, [
-                'class' => Participant::class,
-                'choice_label' => 'username',
-                'multiple' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ]
-            ])
+//            ->add('site', EntityType::class, [
+//                'class' => Site::class,
+//                'choice_label' => 'nom',
+//                'multiple' => false,
+//                'attr' => [
+//                    'class' => 'form-control'
+//                ]
+//            ])
+//            ->add('organisateur', EntityType::class, [
+//                'class' => Participant::class,
+//                'choice_label' => 'username',
+//                'multiple' => false,
+//                'attr' => [
+//                    'class' => 'form-control'
+//                ]
+//            ])
             //TODO : select pour lieux + ajout lieu
 //            ->add('lieu', EntityType::class, [
 //                'class' => Lieu::class,

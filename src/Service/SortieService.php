@@ -2,15 +2,19 @@
 
 namespace App\Service;
 
+use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 class SortieService
 {
 
     private $entityManager;
+    private $participantRepository;
 
     public function __construct(EntityManagerInterface $entityManager){
         $this->entityManager = $entityManager;
@@ -19,17 +23,28 @@ class SortieService
     /**
      * @throws Exception
      */
-    public function create(Sortie $sortie){
-        $today = new \DateTime();
+    public function create(Sortie $sortie, Participant $participant){
+
+
+        $dateDuJour = new \DateTime();
+        $datePlusUnAn = new \DateTime();
+        $datePlusUnAn ->modify('+1 year');
         $dateDebut = $sortie->getDateHeureDebut();
         $dateLimiteInscription = $sortie->getDateLimiteInscription();
 
 
-        if($today > $dateLimiteInscription){
+        $sortie->setOrganisateur($participant);
+        $sortie->setSite($participant->getSite());
+//        $organisateur = $this->getUser();
+//        $user = $sortie->getOrganisateur()->getUserIdentifier();
+
+//        $sortie->setOrganisateur()
+
+        if($dateDuJour > $dateLimiteInscription){
             throw new Exception("La date de limite d'inscription ne peut pas être dans le passé");
         }
 
-        if($today > $dateDebut){
+        if($dateDuJour > $dateDebut){
             throw new Exception("Impossible de créer une sortie dans le passé");
         }
 
@@ -37,7 +52,7 @@ class SortieService
             throw new Exception("Erreur de configuration des dates de début et de limite d'inscription à la sortie");
         }
 
-        if($dateDebut>$today->add(new \DateInterval('P1Y'))->format("Y-m-d")){
+        if($dateDebut>$datePlusUnAn){
             throw new Exception("La date de début de l'évenement est trop lointaine. Maximum: 1 an");
         }
 

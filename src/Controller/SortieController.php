@@ -55,7 +55,8 @@ final class SortieController extends AbstractController
     // CREATE
 
     #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
-    public function createSortie(Request $request, SortieService $sortieService): Response{
+    public function createSortie(Request $request, SortieService $sortieService, EntityManagerInterface $entityManager): Response{
+
 
         $sortie = new Sortie();
 
@@ -69,7 +70,9 @@ final class SortieController extends AbstractController
         if($createSortieForm->isSubmitted() && $createSortieForm->isValid()) {
 
             try{
-                $sortieService->create($sortie);
+                $id = $this->getUser()->getId();
+                $user = $entityManager->getRepository(Participant::class)->find($id);
+                $sortieService->create($sortie, $user);
                 $this->addFlash('success', 'La sortie a bien été créée');
 
                 // TODO : rediriger vers la sortie qui a été créée
