@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Sortir.com{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
 
 {% include 'shared/header.html.twig' %}
+
+{%  for label, messages in app.flashes %}
+{%  for message in messages %}
+    <p class="{{ label }}"> {{  message }}</p>
+{% endfor %}
+{% endfor %}
 
 <main>
     {% block body %}{% endblock %}

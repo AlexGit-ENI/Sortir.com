@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -13,27 +16,52 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le nom de la sortie est obligatoire")]
+    #[Assert\Length(min:5, max:100,
+        minMessage: 'Le titre du film est trop court',
+        maxMessage: 'Le titre du film est trop long',)]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'listeSortiesCrees')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $organisateur = null;
+
+    /**
+     * @var Collection<int, Participant>
+     */
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSorties')]
+    private Collection $listeParticipants;
+
+    public function __construct()
+    {
+        $this->listeParticipants = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,4 +151,41 @@ class Sortie
 
         return $this;
     }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getListeParticipants(): Collection
+    {
+        return $this->listeParticipants;
+    }
+
+    public function addListeParticipant(Participant $listeParticipant): static
+    {
+        if (!$this->listeParticipants->contains($listeParticipant)) {
+            $this->listeParticipants->add($listeParticipant);
+        }
+
+        return $this;
+    }
+
+    public function removeListeParticipant(Participant $listeParticipant): static
+    {
+        $this->listeParticipants->removeElement($listeParticipant);
+
+        return $this;
+    }
+
 }

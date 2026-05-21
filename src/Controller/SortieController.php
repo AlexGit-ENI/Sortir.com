@@ -2,18 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\Sortie;
 use App\Form\SiteSelectType;
+use App\Form\SortieType;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Service\SortieService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Participant;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/sorties', name: 'sorties_')]
 final class SortieController extends AbstractController
 {
-
+    // READ
 
     #[Route('', name: 'list')]
     public function list(SiteRepository $siteRepository, SortieRepository $sortieRepository, Request $request): Response
@@ -42,6 +48,101 @@ final class SortieController extends AbstractController
             'siteSelectForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
             'sorties' => $sorties,
+
         ]);
+    }
+
+    // CREATE
+
+    #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
+    public function createSortie(Request $request, SortieService $sortieService, EntityManagerInterface $entityManager): Response{
+
+
+        $sortie = new Sortie();
+
+        $createSortieForm = $this->createForm(SortieType::class, $sortie, [
+            'action' => $this->generateUrl('sorties_create'),
+            'method' => 'POST',
+        ]);
+
+        $createSortieForm->handleRequest($request);
+
+        if($createSortieForm->isSubmitted() && $createSortieForm->isValid()) {
+
+            try{
+                $id = $this->getUser()->getId();
+                $user = $entityManager->getRepository(Participant::class)->find($id);
+                $sortieService->create($sortie, $user);
+                $this->addFlash('success', 'La sortie a bien été créée');
+
+                // TODO : rediriger vers la sortie qui a été créée
+                return $this->redirectToRoute('sorties_create');
+            }  catch (Exception $e) {
+                $this->addFlash('danger', 'La sortie n\'a pas pu être créée en BDD : '. $e->getMessage());
+                return $this->redirectToRoute('sorties_create');
+            }
+        }
+
+        return $this->render('sortie/create.html.twig', [
+            'createSortieForm' => $createSortieForm->createView(),
+        ]);
+    }
+
+
+        #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
+        public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
+            $maxInscription = $sortie->getNbInscriptionsMax();
+            if (count($sortie->getListeParticipants()) >= $maxInscription) {
+                $this->addFlash('warning', 'Nombre d\'inscription dépassés'); {
+                    try {
+                        $sortie =$sortie->find($sortie->getListeParticipants()[0]);
+                    }
+                    catch (\Exception $e) {
+                        $this->addFlash('warning', 'Une erreur est survenue');
+                    }
+                }
+
+            }
+
+            /** @var Participant $participant */
+            $participant = $this->getUser();
+            if ($sortie->getListeParticipants()->contains($participant)) {
+
+                $this->addFlash('warning','Vous êtes actuellement inscrit.');
+                return $this->redirectToRoute('sorties_list');
+
+            }
+            if (new \DateTime() > $sortie->getDateLimiteInscription()) {
+                $this->addFlash('warning','La sortie n\'est plus disponible');
+                return $this->redirectToRoute('sorties_list');
+            }
+
+
+            $sortie->addListeParticipant($participant);
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('success', 'Inscription confirmée ! Amusez-vous bien.');
+            return $this->redirectToRoute('sorties_list');
+    }
+
+                                    // Se désister =>>>
+    #[Route('/{id}/desister', name: 'desister', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function desister(Sortie $sortie, EntityManagerInterface $em): Response
+    {
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+
+        if (!$sortie->getListeParticipants()->contains($participant)) {
+            $this->addFlash('warning', 'Vous n\'êtes pas inscrit à cette sortie.');
+            return $this->redirectToRoute('sorties_list');
+        }
+
+
+        $sortie->removeListeParticipant($participant);
+        $em->persist($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez bien été désinscrit de la sortie. Connard on est pas assez bien pour vous?');
+        return $this->redirectToRoute('sorties_list');
     }
 }
