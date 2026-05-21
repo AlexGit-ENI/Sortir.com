@@ -8,6 +8,13 @@
 
 {% include 'shared/header.html.twig' %}
 
+{%  for label, messages in app.flashes %}
+{%  for message in messages %}
+    <p>{{  message }}</p>
+{% endfor %}
+{% endfor %}
+
+
 <main>
     {% block body %}{% endblock %}
 </main>
