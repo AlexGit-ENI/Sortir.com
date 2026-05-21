@@ -43,6 +43,8 @@ class SortieService
 
 
 
+
+
         $this->entityManager->persist($sortie);
 
         $this->entityManager->flush();

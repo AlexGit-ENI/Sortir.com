@@ -46,6 +46,8 @@ final class SortieController extends AbstractController
             'siteSelectForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
             'sorties' => $sorties,
+
+
         ]);
     }
 
