@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -26,6 +27,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setDateLimiteInscription(new \DateTime());
             $sortie->setNbInscriptionsMax(random_int(4, 12));
             $sortie->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
+            $sortie->setOrganisateur($this->getReference('admin', Participant::class));
             $manager->persist($sortie);
         }
 
