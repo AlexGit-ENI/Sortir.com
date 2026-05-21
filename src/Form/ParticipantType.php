@@ -3,8 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Participant;
+use App\Entity\Site;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -20,24 +24,17 @@ class ParticipantType extends AbstractType
             ->add('nom')
             ->add('telephone')
             ->add('mail')
-            ->add('motDePasse', PasswordType::class, [
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options'  => ['label' => 'Password', 'hash_property_path' => 'password'],
+                'second_options' => ['label' => 'Repeat Password'],
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new NotBlank(
-                        message: 'Entrer un mot de passe',
-                    ),
-                    new Length(
-                        min: 3,
-                        minMessage: 'Votre mot de passe doit contenir au moins 3 caractères.',
-                        max: 100,
-                    ),
-                ],
             ])
-//            ->add('confirmation')
-//            ->add('ville')
-//            ->add('photo')
-        ;
+            ->add('site', EntityType::class, [
+                'class' => Site::class,
+                'choice_label' => 'nom',
+                'multiple' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Entity\Site;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,28 +17,45 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 #[Route('/profils', name: 'participant_')]
 final class ParticipantController extends AbstractController
 {
-    #[Route('/modifier', name: 'upload')]
-    public function new(
-        Request $request,
-        ParticipantRepository $participantRepository,
-        UserPasswordHasherInterface $passwordHasher,
-    ) : Response
+    #[Route('/{id}/modifier', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function update(Request $request, EntityManagerInterface $entityManager, int $id) : Response
     {
-        $participant = new Participant();
-        $form = $this->createForm(ParticipantType::class, $participant);
+        //Recuperate the participant with the ID
+        $participant = $entityManager->getRepository(Participant::class)->find($id);
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        if(!$participant) {
+            throw $this->createNotFoundException('No product found for id '.$id);
+        }
+
+        if ($participant->getUserIdentifier() !== $this->getUser()->getUserIdentifier()) {
+            $this->addFlash('danger', 'You are not allowed to edit this profile!');
+            return $this->redirectToRoute('sorties_list');
+        }
+
+        $form = $this->createForm(ParticipantType::class, $participant, [
+            'action' => $this->generateUrl('participant_update', ['id' => $id]),
+            'method' => 'POST',
+//            'sites' => $sites
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $passwordHasher->hashPassword($participant, $form->get('plainPassword')->getData());
-            $hashedPassword = $passwordHasher->hashPassword($participant, $plainPassword);
-            $participant->setPassword($hashedPassword);
+            try {
 
-            $participantRepository->save($participant, true);
-            $this->addFlash('Changement enregistré.');
-            return $this->redirectToRoute('app_participant');
+                $entityManager->persist($participant);
+                $entityManager->flush();
+                $this->addFlash('success', 'Idea Successfully Updated !');
+
+                return $this->redirectToRoute('participant_detail', ['id' => $participant->getId()]);
+
+            } catch (\Exception $exception) {
+                $this->addFlash('danger', $exception->getMessage());
+            }
         }
 
-        return $this->render('participant/index.html.twig', [
+        return $this->render('participant/update.html.twig', [
             'form' => $form
         ]);
     }
@@ -57,25 +76,4 @@ final class ParticipantController extends AbstractController
             'participant' => $participant,
         ]);
     }
-//
-//        return $this->render('participant/index.html.twig', [
-//            'controller_name' => 'ParticipantController',
-//        ]);
-//    }
-//    #[Route('/login', name: 'app_login')]
-//    public function login(AuthenticationUtils $authenticationUtils): Response
-//    {
-//        // Si déjà connecté, on redirige
-//        if ($this->getUser()) {
-//            return $this->redirectToRoute('sorties');
-//        }
-//
-//        $error = $authenticationUtils->getLastAuthenticationError();
-//        $lastUsername = $authenticationUtils->getLastAuthenticationError();
-//
-//        return $this->render('participant/login.html.twig', [
-//            'error' => $error,
-//            'last_username' => $lastUsername,
-//        ]);
-//}
 }
