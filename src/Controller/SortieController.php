@@ -7,7 +7,7 @@ use App\Form\SiteSelectType;
 use App\Form\SortieType;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
-use App\Services\SortieService;
+use App\Service\SortieService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,6 +46,7 @@ final class SortieController extends AbstractController
             'siteSelectForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
             'sorties' => $sorties,
+
         ]);
     }
 
@@ -66,12 +67,13 @@ final class SortieController extends AbstractController
         if($createSortieForm->isSubmitted() && $createSortieForm->isValid()) {
 
             try{
-                $sortieService->createSortie($sortie);
+                $sortieService->create($sortie);
                 $this->addFlash('success', 'La sortie a bien été créée');
+
                 // TODO : rediriger vers la sortie qui a été créée
-                return $this->redirectToRoute('sorties_list');
+                return $this->redirectToRoute('sorties_create');
             }  catch (Exception $e) {
-                $this->addFlash('danger', 'La sortie n\'a pas pu être créée en BDD'. $e->getMessage());
+                $this->addFlash('danger', 'La sortie n\'a pas pu être créée en BDD : '. $e->getMessage());
                 return $this->redirectToRoute('sorties_create');
             }
         }
