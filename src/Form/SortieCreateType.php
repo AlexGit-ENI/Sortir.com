@@ -64,6 +64,7 @@ class SortieCreateType extends AbstractType
                     'class' => 'form-control',
                 ]
             ])
+
         ;
 
     }

@@ -16,6 +16,7 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "Le nom de la sortie est obligatoire")]
     #[Assert\Length(min:5, max:100,
