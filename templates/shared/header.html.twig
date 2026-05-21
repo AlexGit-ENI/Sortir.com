@@ -11,20 +11,23 @@
          {% endif %}
 
 
+
     </div>
     <nav>
-        <li>
+        <ul>
 
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <li><a href="{{ path('villes_') }}">Villes</a></li>
-                        <li><a href="{{ path('sorties_list') }}">Sites</a></li>
-                        {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('villes_') }}">Villes</a></li>
+                <li><a href="{{ path('sorties_list') }}">Sites</a></li>
+                <li><a href="{{ path('sorties_create') }}">Créer sortie</a></li>
 
+            {% endif %}
 
-
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <li><a href="{{ path('sorties_list') }}">Accueil</a></li>
-            <li><a href="{{ path('participant_upload') }}">Mon Profil</a></li>
+            <li><a href="{{ path('participant_update', {id : app.user.id}) }}">Mon Profil</a></li>
             <li><a href="{{ path('app_login') }}">Se déconnecter</a></li>
+            {% endif %}
         </ul>
     </nav>
 </header>

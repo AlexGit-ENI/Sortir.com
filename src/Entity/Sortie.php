@@ -6,6 +6,7 @@ use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -15,30 +16,42 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le nom de la sortie est obligatoire")]
+    #[Assert\Length(min:5, max:100,
+        minMessage: 'Le titre du film est trop court',
+        maxMessage: 'Le titre du film est trop long',)]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Site $site = null;
 
     #[ORM\ManyToOne(inversedBy: 'listeSortiesCrees')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Participant $organisateur = null;
 
     /**
@@ -177,7 +190,4 @@ class Sortie
         return $this;
     }
 
-    public function addParticipant(Participant $participant)
-    {
-    }
 }
