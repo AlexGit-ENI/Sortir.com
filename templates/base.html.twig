@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Sortir.com{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
 
@@ -10,7 +11,7 @@
 
 {%  for label, messages in app.flashes %}
 {%  for message in messages %}
-    <p>{{  message }}</p>
+    <p class="{{ label }}"> {{  message }}</p>
 {% endfor %}
 {% endfor %}
 

@@ -24,26 +24,33 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?\DateTime $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Site $site = null;
 
     #[ORM\ManyToOne(inversedBy: 'listeSortiesCrees')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Participant $organisateur = null;
 
     /**

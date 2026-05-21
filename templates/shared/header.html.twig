@@ -18,6 +18,8 @@
             {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('villes_') }}">Villes</a></li>
                 <li><a href="{{ path('sorties_list') }}">Sites</a></li>
+                <li><a href="{{ path('sorties_create') }}">Créer sortie</a></li>
+
             {% endif %}
 
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}

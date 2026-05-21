@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
@@ -69,12 +70,27 @@ class SortieType extends AbstractType
                 'class' => Site::class,
                 'choice_label' => 'nom',
                 'multiple' => false,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('organisateur', EntityType::class, [
                 'class' => Participant::class,
                 'choice_label' => 'username',
                 'multiple' => false,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
+            //TODO : select pour lieux + ajout lieu
+//            ->add('lieu', EntityType::class, [
+//                'class' => Lieu::class,
+//                'choice_label' => 'nom',
+//                'multiple' => false,
+//                'attr' => [
+//                    'class' => 'form-control'
+//                ]
+//            ])
             ->add("Creer", SubmitType::class)
         ;
     }
