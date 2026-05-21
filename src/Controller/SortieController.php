@@ -19,7 +19,9 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/sorties', name: 'sorties_')]
 final class SortieController extends AbstractController
 {
+    //
     // READ
+    //
 
     #[Route('', name: 'list')]
     public function list(SiteRepository $siteRepository, SortieRepository $sortieRepository, Request $request): Response
@@ -52,7 +54,20 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
+    //TODO: limitée au role admin?
+    public function detail(int $id, SortieRepository $sortieRepository): Response{
+
+        $sortie = $sortieRepository->find($id);
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
+
+    //
     // CREATE
+    //
 
     #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
     public function createSortie(Request $request, SortieService $sortieService, EntityManagerInterface $entityManager): Response{
@@ -92,6 +107,12 @@ final class SortieController extends AbstractController
         #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
         public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
             $maxInscription = $sortie->getNbInscriptionsMax();
+
+            // Vérifier que l'EtatSortie soit à Ouverte pour s'inscrire
+            if($sortie->getEtatSortie() !=  'Ouverte') {
+                $this->addFlash('warning', 'Il faut que la sortie soit ouverte pour s\'inscrire');
+            }
+
             if (count($sortie->getListeParticipants()) >= $maxInscription) {
                 $this->addFlash('warning', 'Nombre d\'inscription dépassés'); {
                     try {

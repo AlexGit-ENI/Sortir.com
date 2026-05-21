@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Enum\EtatSortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -29,6 +30,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setNbInscriptionsMax(random_int(4, 12));
             $sortie->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
             $sortie->setOrganisateur($this->getReference(ParticipantFixtures::$participantKeys[random_int(0, count(ParticipantFixtures::$participantKeys) - 1)], Participant::class));
+            $sortie->setEtatSortie(EtatSortie::OPEN);
             $manager->persist($sortie);
         }
 

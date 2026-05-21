@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use App\Enum\EtatSortie;
 use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Builder\Enum_;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
@@ -57,6 +59,9 @@ class Sortie
      */
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSorties')]
     private Collection $listeParticipants;
+
+    #[ORM\Column(enumType: EtatSortie::class)]
+    private ?EtatSortie $etatSortie = null;
 
     public function __construct()
     {
@@ -184,6 +189,18 @@ class Sortie
     public function removeListeParticipant(Participant $listeParticipant): static
     {
         $this->listeParticipants->removeElement($listeParticipant);
+
+        return $this;
+    }
+
+    public function getEtatSortie(): ?EtatSortie
+    {
+        return $this->etatSortie;
+    }
+
+    public function setEtatSortie(EtatSortie $etatSortie): static
+    {
+        $this->etatSortie = $etatSortie;
 
         return $this;
     }
