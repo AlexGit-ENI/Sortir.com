@@ -33,9 +33,11 @@
                             {{ sortie.description }}</p>
                         <p> Nombre d'inscrits {{ sortie.listeParticipants|length }} </p>
 
-                      {% if not (app.user in sortie.listeParticipants) %}
+
+                        {% if not (app.user in sortie.listeParticipants) %}
                           <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
-                      {% else %}
+                            <a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a>
+                        {% else %}
                           <a href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister ici</a>
                       {% endif %}
 
