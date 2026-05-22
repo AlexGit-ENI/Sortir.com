@@ -66,4 +66,41 @@ class SortieService
         $this->entityManager->flush();
     }
 
+    public function updateEtatSortie(Sortie $sortie): Sortie{
+
+        $dateDuJour = new \DateTime();
+        $dateDebut = $sortie->getDateHeureDebut();
+        $dateLimiteInscription = $sortie->getDateLimiteInscription();
+
+        // Avoir le DateTime de la fin de la sortie
+        $dateFinSortie = $dateDebut;
+        $dureeSortie = $sortie->getDuree();
+        $dateFinSortie->modify('+'.$dureeSortie.' minute');
+
+        // Avoir le DateTime d'un mois plus tard après le début de la sortie
+        $datePlusUnMois = $dateDebut;
+        $datePlusUnMois->modify('+1 months');
+
+        if ($sortie->getEtatSortie() == null) {
+            $sortie->setEtatSortie(EtatSortie::CREATED);
+            return $sortie;
+        }
+
+        if ($sortie->getEtatSortie() == EtatSortie::ARCHIVED) {
+            return $sortie;
+        }
+
+        if ($sortie->getEtatSortie() == EtatSortie::CANCELLED) {
+            if ($dateDuJour == $datePlusUnMois) {
+                $sortie->setEtatSortie(EtatSortie::ARCHIVED);
+                return $sortie;
+            }
+            return $sortie;
+        }
+
+        if ($dateDebut)
+
+        return $sortie;
+    }
+
 }
