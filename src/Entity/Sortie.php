@@ -60,6 +60,8 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSorties')]
     private Collection $listeParticipants;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Lieu $lieu = null;
     #[ORM\Column(enumType: EtatSortie::class)]
     private ?EtatSortie $etatSortie = null;
 
@@ -193,6 +195,14 @@ class Sortie
         return $this;
     }
 
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
     public function getEtatSortie(): ?EtatSortie
     {
         return $this->etatSortie;

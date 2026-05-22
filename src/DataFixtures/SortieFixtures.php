@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
@@ -30,6 +31,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setNbInscriptionsMax(random_int(4, 12));
             $sortie->setSite($this->getReference(SiteFixtures::$campus[random_int(0, count(SiteFixtures::$campus) - 1)], Site::class));
             $sortie->setOrganisateur($this->getReference(ParticipantFixtures::$participantKeys[random_int(0, count(ParticipantFixtures::$participantKeys) - 1)], Participant::class));
+            $sortie->setLieu($this->getReference(LieuFixtures::$lieuKeys[random_int(0, count(LieuFixtures::$lieuKeys) - 1)], Lieu::class));
             $sortie->setEtatSortie(EtatSortie::OPEN);
             $manager->persist($sortie);
         }
@@ -39,6 +41,6 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [SiteFixtures::class, ParticipantFixtures::class];
+        return [SiteFixtures::class, ParticipantFixtures::class, LieuFixtures::class];
     }
 }

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ObjectManager;
 class LieuFixtures extends Fixture implements DependentFixtureInterface
 {
 
+    public static array $lieuKeys = [];
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create('fr_FR');
@@ -25,7 +26,8 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
             $lieu->setLatitude($faker->latitude());
             $lieu->setLongitude($faker->longitude());
             $lieu->setVille($this->getReference(VilleFixtures::$villeKeys[random_int(0, count(VilleFixtures::$villeKeys) - 1)], Ville::class));
-
+            static::$lieuKeys[$i-1] = $lieu->getNom();
+            $this->addReference(static::$lieuKeys[$i-1], $lieu);
             $manager->persist($lieu);
         }
         $manager->flush();
