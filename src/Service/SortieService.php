@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Enum\EtatSortie;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -35,6 +36,7 @@ class SortieService
 
         $sortie->setOrganisateur($participant);
         $sortie->setSite($participant->getSite());
+        $sortie->setEtatSortie(EtatSortie::OPEN);
 //        $organisateur = $this->getUser();
 //        $user = $sortie->getOrganisateur()->getUserIdentifier();
 
