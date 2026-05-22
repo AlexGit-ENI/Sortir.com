@@ -24,20 +24,23 @@
         <label>Description et infos :</label>
         <span>{{ sortie.description }}</span><br>
 
-{#        <label>Ville Organisatrice :</label>#}
-{#        <span>{{ sortie.lieu.ville.nom }}</span><br>#}
+        <label>Ville Organisatrice :</label>
+        <span>{{ sortie.lieu.ville.nom }}</span><br>
 
-{#        <label>Lieu :</label>#}
-{#        <span>{{ sortie.lieu.nom }}</span><br>#}
+        <label>Lieu :</label>
+        <span>{{ sortie.lieu.nom }}</span><br>
 
-{#        <label>Code Postal :</label>#}
-{#        <span>{{ sortie.lieu.ville.codePostal }}</span><br>#}
+        <label>Code Postal :</label>
+        <span>{{ sortie.lieu.ville.codePostal }}</span><br>
 
-{#        <label>Latitude :</label>#}
-{#        <span>{{ sortie.ville.latitude }}</span><br>#}
+        <label>Latitude :</label>
+        <span>{{ sortie.lieu.latitude }}</span><br>
 
-{#        <label>Longitude :</label>#}
-{#        <span>{{ sortie.ville.longitude }}</span><br>#}
+        <label>Longitude :</label>
+        <span>{{ sortie.lieu.longitude }}</span><br>
+
+        <label> Etat de la sortie : </label>
+        <span> {{ sortie.etatSortie.value }}</span>
 
         <h2>Liste des participants inscrits à l'événement :</h2>
 
@@ -51,7 +54,7 @@
             <tbody>
             {% for participant in sortie.listeParticipants %}
                 <tr>
-                    <td>{{ participant.pseudo }}</td>
+                    <td>{{ participant.username }}</td>
                     <td>{{ participant.nom }}</td>
                 </tr>
             {% endfor %}
