@@ -54,10 +54,11 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findAllWithUpdate(SortieService $sortieService) {
+    public function findAllAndUpdate(SortieService $sortieService): array {
         $sorties = $this->findAll();
         foreach ($sorties as $sortie) {
-            $this->$sortieService->updateSortir($sortie);
+            $sortieService->updateEtatSortie($sortie);
+            $sortieService->persistAndFlush($sortie);
         }
         return $sorties;
     }
