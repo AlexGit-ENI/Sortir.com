@@ -203,7 +203,7 @@ class Sortie
     public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
-            return $this;
+        return $this;
     }
     public function getEtatSortie(): ?EtatSortie
     {

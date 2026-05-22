@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sortie;
+use App\Service\SortieService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -51,5 +52,14 @@ class SortieRepository extends ServiceEntityRepository
         $query = $querybuilder->getQuery();
 
         return $query->getResult();
+    }
+
+    public function findAllAndUpdate(SortieService $sortieService): array {
+        $sorties = $this->findAll();
+        foreach ($sorties as $sortie) {
+            $sortieService->updateEtatSortie($sortie);
+            $sortieService->persistAndFlush($sortie);
+        }
+        return $sorties;
     }
 }
