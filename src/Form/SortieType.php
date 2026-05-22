@@ -23,50 +23,54 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Nom',
-                'required' => true,
+                'label' => 'Nom de la sortie',
                 'attr' => [
-                    'placeholder' => 'Nom',
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
             ])
             ->add('dateHeureDebut', DateTimeType::class, [
                 'label' => 'Début de la sortie',
-                'required' => true,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée',
-                'required' => true,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
-
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription',
-                'required' => true,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
+
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
-                'label' => 'Nombre de places disponibles',
-                'required' => true,
+                'label' => 'Début de la sortie',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
+
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
-                'required' => false,
+                'label' => 'Description de la sortie',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ]
             ])
-//            ->add('site', EntityType::class, [
+            ->add('lieu', EntityType::class, [
+                'label' => 'Lieu',
+                'class' => Lieu::class,
+                'choice_label' => 'nom',
+                'attr' => [
+                    'class' => 'form-control',
+                ]
+            ])
+
+
+            //            ->add('site', EntityType::class, [
 //                'class' => Site::class,
 //                'choice_label' => 'nom',
 //                'multiple' => false,
@@ -91,7 +95,7 @@ class SortieType extends AbstractType
 //                    'class' => 'form-control'
 //                ]
 //            ])
-            ->add("Creer", SubmitType::class)
+
         ;
     }
 

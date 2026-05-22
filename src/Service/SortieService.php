@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Enum\EtatSortie;
 use App\Repository\ParticipantRepository;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,8 +28,8 @@ class SortieService
     public function create(Sortie $sortie, Participant $participant){
 
 
-        $dateDuJour = new \DateTime();
-        $datePlusUnAn = new \DateTime();
+        $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $datePlusUnAn = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $datePlusUnAn ->modify('+1 year');
         $dateDebut = $sortie->getDateHeureDebut();
         $dateLimiteInscription = $sortie->getDateLimiteInscription();
@@ -59,11 +60,17 @@ class SortieService
         }
 
 
-
-
         $this->entityManager->persist($sortie);
 
         $this->entityManager->flush();
     }
+
+    function updateSortie(Sortie $sortie, EntityManagerInterface $entityManager){
+
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+        return $sortie;
+    }
+
 
 }

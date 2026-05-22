@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Enum\EtatSortie;
 use App\Form\SiteSelectType;
 use App\Form\SortieType;
+use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieService;
+use DateTimeZone;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,15 +57,16 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'])]
-    //TODO: limitée au role admin?
-    public function detail(int $id, SortieRepository $sortieRepository): Response{
+    #[Route('/{id}', name: 'detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(Sortie $sortie, Request $request, SortieRepository $sortieRepository): Response{
 
-        $sortie = $sortieRepository->find($id);
+        $sortie = $sortieRepository->find($sortie->getId());
 
         return $this->render('sortie/detail.html.twig', [
             'sortie' => $sortie,
+            'id' => $sortie->getId(),
         ]);
+
     }
 
     //
@@ -74,6 +78,7 @@ final class SortieController extends AbstractController
 
 
         $sortie = new Sortie();
+
 
         $createSortieForm = $this->createForm(SortieType::class, $sortie, [
             'action' => $this->generateUrl('sorties_create'),
@@ -89,9 +94,7 @@ final class SortieController extends AbstractController
                 $user = $entityManager->getRepository(Participant::class)->find($id);
                 $sortieService->create($sortie, $user);
                 $this->addFlash('success', 'La sortie a bien été créée');
-
-                // TODO : rediriger vers la sortie qui a été créée
-                return $this->redirectToRoute('sorties_create');
+                return $this->redirectToRoute('sorties_detail', ['id' => $sortie->getId()]);
             }  catch (Exception $e) {
                 $this->addFlash('danger', 'La sortie n\'a pas pu être créée en BDD : '. $e->getMessage());
                 return $this->redirectToRoute('sorties_create');
@@ -103,13 +106,69 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    //
+    // UPDATE
+    //
+
+        #[Route('/{id}/update', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+        public function updateSortie(Request $request, int $id, SortieRepository $sortieRepository,
+                                     SortieService $sortieService): Response{
+
+            try {
+                $sortie = $sortieRepository->find($id);
+
+                if($sortie === null) {
+                    $this->addFlash('danger', 'La sortie n\'existe pas');
+                    return $this->redirectToRoute('sorties_list');
+                }
+
+            } catch (Exception $e) {
+                $this->addFlash('danger', $e->getMessage());
+                return $this->redirectToRoute('sorties_list');
+            }
+
+            $updateSortieForm = $this->createForm(SortieType::class, $sortie, [
+                'action' => $this->generateUrl('sorties_update', ['id' => $id]),
+                'method' => 'POST',
+            ]);
+
+            $updateSortieForm->handleRequest($request);
+
+            if($sortie->getOrganisateur() === $this->getUser()) {
+
+                if($updateSortieForm->isSubmitted() && $updateSortieForm->isValid()) {
+                    try{
+                        $sortieService->updateSortie($sortie);
+                        $this->addFlash('success', 'La sortie a été modifiée avec succès');
+                        return $this->redirectToRoute('sorties_detail', ['id' => $sortie->getId()]);
+                    } catch(Exception $e) {
+                        $this->addFlash('danger', 'Erreur de modification : ' .$e->getMessage());
+                        return $this->redirectToRoute('sorties_update', ['id' => $sortie->getId()]);
+                    }
+
+                }
+
+            } else {
+                $this->addFlash('danger', 'Seul le créateur de la sortie est autorisé à la modifier');
+            }
+
+
+            return $this->render('sortie/update.html.twig', [
+                'sortie' => $sortie,
+                'sortieUpdateForm' => $updateSortieForm->createView(),
+            ]);
+
+
+
+        }
+
 
         #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
         public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
             $maxInscription = $sortie->getNbInscriptionsMax();
 
             // Vérifier que l'EtatSortie soit à Ouverte pour s'inscrire
-            if($sortie->getEtatSortie() !=  'Ouverte') {
+            if($sortie->getEtatSortie() !=  EtatSortie::OPEN) {
                 $this->addFlash('warning', 'Il faut que la sortie soit ouverte pour s\'inscrire');
             }
 
@@ -134,6 +193,7 @@ final class SortieController extends AbstractController
 
             }
             if (new \DateTime() > $sortie->getDateLimiteInscription()) {
+                $sortie->setEtatSortie(EtatSortie::CLOSED);
                 $this->addFlash('warning','La sortie n\'est plus disponible');
                 return $this->redirectToRoute('sorties_list');
             }
