@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Enum\EtatSortie;
 use App\Form\SiteSelectType;
 use App\Form\SortieType;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieService;
+use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use mysql_xdevapi\Warning;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,8 +108,10 @@ final class SortieController extends AbstractController
 
 
         #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
-        public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
+        public function inscription(Sortie $sortie, EntityManagerInterface $em, SortieService $sortieService): Response {
             $maxInscription = $sortie->getNbInscriptionsMax();
+            $sortie = $sortieService->updateEtatSortie($sortie);
+
 
             // Vérifier que l'EtatSortie soit à Ouverte pour s'inscrire
             if($sortie->getEtatSortie() !=  'Ouverte') {
@@ -166,4 +171,5 @@ final class SortieController extends AbstractController
         $this->addFlash('success', 'Vous avez bien été désinscrit de la sortie. Connard on est pas assez bien pour vous?');
         return $this->redirectToRoute('sorties_list');
     }
+
 }
