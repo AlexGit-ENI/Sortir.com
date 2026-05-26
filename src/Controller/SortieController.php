@@ -24,6 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/sorties', name: 'sorties_')]
+#[IsGranted("ROLE_USER")]
 final class SortieController extends AbstractController
 {
     //

@@ -76,6 +76,8 @@ class SortieService
         $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $dateDebut = $sortie->getDateHeureDebut();
 
+        $dateFinInscription = $sortie->getDateLimiteInscription();
+
         $nbInscrits = count($sortie->getListeParticipants());
         $nbInscritsMax = $sortie->getNbInscriptionsMax();
 
@@ -124,7 +126,7 @@ class SortieService
         }
 
         // Si une sortie autant ou plus d'inscrit, elle devient Cloturée
-        if($nbInscrits>=$nbInscritsMax){
+        if($nbInscrits>=$nbInscritsMax || $dateDuJour>=$dateFinInscription ){
             $sortie->setEtatSortie(EtatSortie::CLOSED);
             return $sortie;
         }
