@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use function Sodium\add;
 
 class ParticipantType extends AbstractType
 {
@@ -35,6 +36,7 @@ class ParticipantType extends AbstractType
                 'choice_label' => 'nom',
                 'multiple' => false,
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
