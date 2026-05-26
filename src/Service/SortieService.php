@@ -108,6 +108,9 @@ class SortieService
             $sortie->setEtatSortie(EtatSortie::ARCHIVED);
             return $sortie;
         }
+        if ($sortie->getEtatSortie() === EtatSortie::CANCELLED) {
+            return $sortie;
+        }
         //dd($dateDuJour, $dateFinSortie);
         // Si une sortie passe sa date de fin, elle devient Passée
         if ($dateDuJour>$dateFinSortie) {
@@ -135,3 +138,4 @@ class SortieService
     }
 
 }
+

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Participant;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/sorties', name: 'sorties_')]
 final class SortieController extends AbstractController
@@ -227,8 +228,51 @@ final class SortieController extends AbstractController
         $em->persist($sortie);
         $em->flush();
 
-        $this->addFlash('success', 'Vous avez bien été désinscrit de la sortie. Connard on est pas assez bien pour vous?');
+        $this->addFlash('success', 'Vous avez été désinscrit de la sortie.');
         return $this->redirectToRoute('sorties_list');
     }
+                            //Annuler une sortie via l'organisateur (ADMIN) //
+    #[Route('/{id}/annuler', name: 'annuler', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function cancel(
+        Sortie $sortie,
+        EntityManagerInterface $em
+    ): Response {
+
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+
+        if ($sortie->getOrganisateur() !== $participant) {
+
+            throw $this->createAccessDeniedException(
+                'Seul l\'organisateur peut annuler cette sortie.'
+            );
+        }
+
+        $sortie->setEtatSortie(EtatSortie::CANCELLED);
+
+        $em->persist($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été annulée.');
+
+        return $this->redirectToRoute('sorties_list');
+    }
+
+//            if ($sortie->getEtatSortie() === EtatSortie::CANCELLED) {
+//
+//            $this->addFlash('warning', 'La sortie est déjà annulée.');
+//
+//            return $this->redirectToRoute('sorties_list');
+//        }
+//
+//        $sortie->setEtatSortie(EtatSortie::CANCELLED);
+//
+//        $em->persist($sortie);
+//        $em->flush();
+//
+//        $this->addFlash('success', 'La sortie a bien été annulée par l\'organisateur.');
+//
+//        return $this->redirectToRoute('sorties_list');
+//    }
 
 }
