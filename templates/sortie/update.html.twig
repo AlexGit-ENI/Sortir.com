@@ -5,27 +5,23 @@
 {% block body %}
 
     {{ form_start(sortieUpdateForm) }}
-    {{ form_row(sortieUpdateForm.nom) }}
-    {{ form_row(sortieUpdateForm.dateHeureDebut) }}
-    {{ form_row(sortieUpdateForm.dateLimiteInscription) }}
-    {{ form_row(sortieUpdateForm.nbInscriptionsMax) }}
-    {{ form_row(sortieUpdateForm.duree) }}
-    {{ form_row(sortieUpdateForm.description) }}
-    {{ form_row(sortieUpdateForm.lieu) }}
-    <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
-    {{ form_row(sortieUpdateForm._token) }}
-    {{ dump(sortieUpdateForm.lieu) }}
-    <div>
-        <p>Rue : </p>
-        <p> {{ sortieUpdateForm.lieu.vars.data.rue}}</p>
-    </div>
-
-    <div>
-    <p>Coordonnées : </p>
-    <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
-    </div>
-
-
+        {{ form_row(sortieUpdateForm.nom) }}
+        {{ form_row(sortieUpdateForm.dateHeureDebut) }}
+        {{ form_row(sortieUpdateForm.dateLimiteInscription) }}
+        {{ form_row(sortieUpdateForm.nbInscriptionsMax) }}
+        {{ form_row(sortieUpdateForm.duree) }}
+        {{ form_row(sortieUpdateForm.description) }}
+        {{ form_row(sortieUpdateForm.lieu) }}
+        <button type="submit">Modifier</button>
+        {{ form_row(sortieUpdateForm._token) }}
+        <div>
+            <p>Rue : </p>
+            <p> {{ sortieUpdateForm.lieu.vars.data.rue}}</p>
+        </div>
+        <div>
+        <p>Coordonnées : </p>
+        <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
+        </div>
     {{ form_end(sortieUpdateForm) }}
 
 {% endblock %}
