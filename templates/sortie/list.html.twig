@@ -40,7 +40,9 @@
                             <a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a>
                         {% else %}
                           <a href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister ici</a>
-                      {% endif %}
+                            <a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a>
+
+                        {% endif %}
 
                     </article>
 
