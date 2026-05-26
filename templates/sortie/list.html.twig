@@ -23,7 +23,7 @@
                         <h2>{{ sortie.nom }}</h2>
                         <div class="sortie-meta">
                             <p><i>📆 </i><time>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</time></p>
-                            <p><i>⏱️ </i>Durée : {{ sortie.duree }} h</p>
+                            <p><i>⏱️ </i>Durée : {{ sortie.duree }} minutes</p>
                             <p>Organisée par le site de : {{ sortie.site.nom }} - Organisateur : <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></p>
                             <p>Lieu : {{ sortie.lieu.nom }}</p>
                             <p>Ville : {{ sortie.lieu.ville.nom }}</p>
@@ -35,14 +35,20 @@
                         <p> Nombre d'inscrits {{ sortie.listeParticipants|length }} </p>
                         <p> Status :  {{ sortie.etatSortie.value }}</p>
 
-                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED')%}
                             {% if not (app.user in sortie.listeParticipants) %}
                                 <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
                             {% else %}
                                 <a href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister ici</a>
                             {%endif%}
-                            <a href="{{ path('sorties_annuler', {'id': sortie.id}) }}">Annuler la sortie</a>
+                            {% if app.user == sortie.organisateur %}
+                                <a href="{{ path('sorties_annuler', {'id': sortie.id}) }}">Annuler la sortie</a>
+                            {% endif %}
                         {%endif%}
+                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+                            <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+                            <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                        {% endif %}
                         <a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a>
 
                     </article>

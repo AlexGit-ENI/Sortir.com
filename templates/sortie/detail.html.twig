@@ -19,7 +19,7 @@
         <span>{{ sortie.nbInscriptionsMax }}</span><br>
 
         <label>Durée :</label>
-        <span>{{ sortie.duree }}</span><br>
+        <span>{{ sortie.duree }} minutes</span><br>
 
         <label>Description et infos :</label>
         <span>{{ sortie.description }}</span><br>
@@ -41,6 +41,13 @@
 
         <label> Etat de la sortie : </label>
         <span> {{ sortie.etatSortie.value }}</span>
+
+        <br>
+
+        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+            <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+            <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+        {% endif %}
 
         <h2>Liste des participants inscrits à l'événement :</h2>
 

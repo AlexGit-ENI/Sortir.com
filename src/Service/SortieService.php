@@ -37,7 +37,7 @@ class SortieService
 
         $sortie->setOrganisateur($participant);
         $sortie->setSite($participant->getSite());
-        $sortie->setEtatSortie(EtatSortie::OPEN);
+        $sortie->setEtatSortie(EtatSortie::CREATED);
 //        $organisateur = $this->getUser();
 //        $user = $sortie->getOrganisateur()->getUserIdentifier();
 
@@ -92,9 +92,7 @@ class SortieService
 
         // Ici, l'odre des IF est important
 
-        // Si la sortie n'a pas d'état -> etatSortie = 'Créée'
-        if ($sortie->getEtatSortie() == null) {
-            $sortie->setEtatSortie(EtatSortie::CREATED);
+        if ($sortie->getEtatSortie() == EtatSortie::CREATED) {
             return $sortie;
         }
 

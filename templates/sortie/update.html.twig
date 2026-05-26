@@ -13,6 +13,7 @@
         {{ form_row(sortieUpdateForm.description) }}
         {{ form_row(sortieUpdateForm.lieu) }}
         <button type="submit">Modifier</button>
+        <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
         {{ form_row(sortieUpdateForm._token) }}
         <div>
             <p>Rue : </p>
@@ -23,5 +24,4 @@
         <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
         </div>
     {{ form_end(sortieUpdateForm) }}
-
 {% endblock %}

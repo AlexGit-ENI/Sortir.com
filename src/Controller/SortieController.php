@@ -277,21 +277,30 @@ final class SortieController extends AbstractController
         return $this->redirectToRoute('sorties_list');
     }
 
-//            if ($sortie->getEtatSortie() === EtatSortie::CANCELLED) {
-//
-//            $this->addFlash('warning', 'La sortie est déjà annulée.');
-//
-//            return $this->redirectToRoute('sorties_list');
-//        }
-//
-//        $sortie->setEtatSortie(EtatSortie::CANCELLED);
-//
-//        $em->persist($sortie);
-//        $em->flush();
-//
-//        $this->addFlash('success', 'La sortie a bien été annulée par l\'organisateur.');
-//
-//        return $this->redirectToRoute('sorties_list');
-//    }
+    #[Route('/{id}/publier', name: 'open', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function open(
+        Sortie $sortie,
+        EntityManagerInterface $em
+    ): Response {
+
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+
+        if ($sortie->getOrganisateur() !== $participant) {
+
+            throw $this->createAccessDeniedException(
+                'Seul l\'organisateur peut annuler cette sortie.'
+            );
+        }
+
+        $sortie->setEtatSortie(EtatSortie::OPEN);
+
+        $em->persist($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été publiée.');
+
+        return $this->redirectToRoute('sorties_list');
+    }
 
 }
