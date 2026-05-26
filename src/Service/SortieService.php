@@ -82,12 +82,14 @@ class SortieService
         $nbInscritsMax = $sortie->getNbInscriptionsMax();
 
         // Avoir le DateTime de la fin de la sortie
-        $dateFinSortie = $dateDebut;
+        // clone indispensable sinon nous récupérons l'adresse mémoire
+        $dateFinSortie = clone $dateDebut;
         $dureeSortie = $sortie->getDuree();
         $dateFinSortie->modify('+'.$dureeSortie.' minute');
 
         // Avoir le DateTime d'un mois plus tard après le début de la sortie
-        $datePlusUnMois = $dateDebut;
+        // clone indispensable sinon nous récupérons l'adresse mémoire
+        $datePlusUnMois = clone $dateDebut;
         $datePlusUnMois->modify('+1 months');
 
         // Ici, l'odre des IF est important
@@ -108,9 +110,10 @@ class SortieService
             $sortie->setEtatSortie(EtatSortie::ARCHIVED);
             return $sortie;
         }
-
+        //dd($dateDuJour, $dateFinSortie);
         // Si une sortie passe sa date de fin, elle devient Passée
         if ($dateDuJour>$dateFinSortie) {
+
             $sortie->setEtatSortie(EtatSortie::PAST);
             return $sortie;
         }

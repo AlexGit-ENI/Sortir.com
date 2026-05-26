@@ -12,9 +12,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SortieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $sortieService;
+    public function __construct(ManagerRegistry $registry, SortieService $sortieService)
     {
+
         parent::__construct($registry, Sortie::class);
+        $this->sortieService = $sortieService;
     }
 
     //    /**
@@ -54,11 +57,11 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findAllAndUpdate(SortieService $sortieService): array {
+    public function findAllAndUpdate(): array {
         $sorties = $this->findAll();
         foreach ($sorties as $sortie) {
-            $sortieService->updateEtatSortie($sortie);
-            $sortieService->persistAndFlush($sortie);
+            $this->sortieService->updateEtatSortie($sortie);
+            $this->sortieService->persistAndFlush($sortie);
         }
         return $sorties;
     }

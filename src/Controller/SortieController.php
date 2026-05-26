@@ -37,7 +37,7 @@ final class SortieController extends AbstractController
         $form->handleRequest($request);
 
         // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
-        $sorties = $sortieRepository->findAllAndUpdate($sortieService);
+        $sorties = $sortieRepository->findAllAndUpdate();
 
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
         if($form->isSubmitted()) {
