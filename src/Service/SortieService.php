@@ -28,8 +28,8 @@ class SortieService
     public function create(Sortie $sortie, Participant $participant){
 
 
-        $dateDuJour = new \DateTime();
-        $datePlusUnAn = new \DateTime();
+        $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $datePlusUnAn = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $datePlusUnAn ->modify('+1 year');
         $dateDebut = $sortie->getDateHeureDebut();
         $dateLimiteInscription = $sortie->getDateLimiteInscription();
@@ -37,7 +37,7 @@ class SortieService
 
         $sortie->setOrganisateur($participant);
         $sortie->setSite($participant->getSite());
-        $sortie->setEtatSortie(EtatSortie::OPEN);
+        $sortie->setEtatSortie(EtatSortie::CREATED);
 //        $organisateur = $this->getUser();
 //        $user = $sortie->getOrganisateur()->getUserIdentifier();
 
@@ -58,8 +58,6 @@ class SortieService
         if($dateDebut>$datePlusUnAn){
             throw new Exception("La date de début de l'évenement est trop lointaine. Maximum: 1 an");
         }
-
-
 
 
         $this->entityManager->persist($sortie);
@@ -94,9 +92,7 @@ class SortieService
 
         // Ici, l'odre des IF est important
 
-        // Si la sortie n'a pas d'état -> etatSortie = 'Créée'
-        if ($sortie->getEtatSortie() == null) {
-            $sortie->setEtatSortie(EtatSortie::CREATED);
+        if ($sortie->getEtatSortie() == EtatSortie::CREATED) {
             return $sortie;
         }
 
@@ -108,6 +104,9 @@ class SortieService
         // Un mois après la fin d'une sortie, elle devient archivée
         if ($dateDuJour >= $datePlusUnMois) {
             $sortie->setEtatSortie(EtatSortie::ARCHIVED);
+            return $sortie;
+        }
+        if ($sortie->getEtatSortie() === EtatSortie::CANCELLED) {
             return $sortie;
         }
         //dd($dateDuJour, $dateFinSortie);
@@ -136,4 +135,12 @@ class SortieService
         return $sortie;
     }
 
+
+    public function updateSortie(Sortie $sortie): Sortie {
+        $this->entityManager->persist($sortie);
+        $this->entityManager->flush();
+        return $sortie;
+    }
+
 }
+

@@ -17,11 +17,11 @@
         <ul>
 
             {% if is_granted('ROLE_ADMIN') %}
-                <li><a href="{{ path('sorties_create') }}">Créer sortie</a></li>
-
+                <li><a href="{{ path('sorties_archives') }}">Archives</a></li>
             {% endif %}
 
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <li><a href="{{ path('sorties_create') }}">Créer sortie</a></li>
             <li><a href="{{ path('sorties_list') }}">Accueil</a></li>
             <li><a href="{{ path('participant_update', {id : app.user.id}) }}">Mon Profil</a></li>
             <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>

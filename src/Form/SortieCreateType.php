@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Lieu;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -64,6 +65,14 @@ class SortieCreateType extends AbstractType
                     'class' => 'form-control',
                 ]
             ])
+            ->add('lieu', EntityType::class, [
+                'label' => 'Lieu',
+                'class' => Lieu::class,
+                'choice_label' => 'id',
+                'attr' => [
+                    'class' => 'form-control',
+                ]
+            ])
 
         ;
 
@@ -73,6 +82,7 @@ class SortieCreateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
+            'allow_extra_fields' => true
         ]);
     }
 }

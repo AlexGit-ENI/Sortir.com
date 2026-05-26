@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une sortie{% endblock %}
+
+{% block body %}
+
+    {{ form_start(sortieUpdateForm) }}
+        {{ form_row(sortieUpdateForm.nom) }}
+        {{ form_row(sortieUpdateForm.dateHeureDebut) }}
+        {{ form_row(sortieUpdateForm.dateLimiteInscription) }}
+        {{ form_row(sortieUpdateForm.nbInscriptionsMax) }}
+        {{ form_row(sortieUpdateForm.duree) }}
+        {{ form_row(sortieUpdateForm.description) }}
+        {{ form_row(sortieUpdateForm.lieu) }}
+        <button type="submit">Modifier</button>
+        <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+        {{ form_row(sortieUpdateForm._token) }}
+        <div>
+            <p>Rue : </p>
+            <p> {{ sortieUpdateForm.lieu.vars.data.rue}}</p>
+        </div>
+        <div>
+        <p>Coordonnées : </p>
+        <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
+        </div>
+    {{ form_end(sortieUpdateForm) }}
+{% endblock %}

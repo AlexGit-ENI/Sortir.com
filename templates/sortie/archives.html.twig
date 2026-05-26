@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les sorties{% endblock %}
+
+{% block body %}
+
+<main>
+    {% if sorties %}
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Détails</th>
+            </tr>
+            {% for sortie in sorties %}
+            <tr>
+                <td>{{ sortie.nom }}</td>
+                <td><a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</main>
+
+{% endblock %}
