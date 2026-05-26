@@ -134,4 +134,11 @@ class SortieService
         return $sortie;
     }
 
+
+    public function updateSortie(Sortie $sortie): Sortie {
+        $this->entityManager->persist($sortie);
+        $this->entityManager->flush();
+        return $sortie;
+    }
+
 }

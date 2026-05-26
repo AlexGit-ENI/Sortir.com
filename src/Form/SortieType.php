@@ -48,7 +48,7 @@ class SortieType extends AbstractType
 
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
-                'label' => 'Début de la sortie',
+                'label' => 'Nombre d\'inscriptions max',
                 'attr' => [
                     'class' => 'form-control',
                 ]

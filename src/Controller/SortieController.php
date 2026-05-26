@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Participant;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/sorties', name: 'sorties_')]
 final class SortieController extends AbstractController
@@ -44,6 +45,15 @@ final class SortieController extends AbstractController
         // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
         $sorties = $sortieRepository->findAllAndUpdate();
 
+        // Ne pas récuprer les sorties archivées
+        $sortiesNotArchived = [];
+        foreach ($sorties as $sortie) {
+            $isArchived = $sortie->getEtatSortie() === EtatSortie::ARCHIVED;
+            if (!$isArchived) {
+                $sortiesNotArchived[] = $sortie;
+            }
+        }
+
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
         if($form->isSubmitted()) {
 
@@ -54,8 +64,29 @@ final class SortieController extends AbstractController
         return $this->render('sortie/list.html.twig', [
             'siteSelectForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
-            'sorties' => $sorties,
+            'sorties' => $sortiesNotArchived,
 
+        ]);
+    }
+
+    #[Route('/archives', name: 'archives')]
+    #[IsGranted("ROLE_ADMIN")]
+    public function archives(SiteRepository $siteRepository, SortieRepository $sortieRepository,  SortieService $sortieService, Request $request): Response
+    {
+        // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
+        $sorties = $sortieRepository->findAllAndUpdate();
+
+        // Ne pas récuprer les sorties archivées
+        $sortiesArchived = [];
+        foreach ($sorties as $sortie) {
+            $isArchived = $sortie->getEtatSortie() === EtatSortie::ARCHIVED;
+            if ($isArchived) {
+                $sortiesArchived[] = $sortie;
+            }
+        }
+
+        return $this->render('sortie/archives.html.twig', [
+            'sorties' => $sortiesArchived,
         ]);
     }
 
@@ -135,9 +166,7 @@ final class SortieController extends AbstractController
             ]);
 
             $updateSortieForm->handleRequest($request);
-
             if($sortie->getOrganisateur() === $this->getUser()) {
-
                 if($updateSortieForm->isSubmitted() && $updateSortieForm->isValid()) {
                     try{
                         $sortieService->updateSortie($sortie);
@@ -147,23 +176,17 @@ final class SortieController extends AbstractController
                         $this->addFlash('danger', 'Erreur de modification : ' .$e->getMessage());
                         return $this->redirectToRoute('sorties_update', ['id' => $sortie->getId()]);
                     }
-
                 }
 
             } else {
                 $this->addFlash('danger', 'Seul le créateur de la sortie est autorisé à la modifier');
             }
 
-
             return $this->render('sortie/update.html.twig', [
                 'sortie' => $sortie,
                 'sortieUpdateForm' => $updateSortieForm->createView(),
             ]);
-
-
-
         }
-
 
         #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
         public function inscription(Sortie $sortie, EntityManagerInterface $em, SortieService $sortieService): Response {
@@ -185,7 +208,6 @@ final class SortieController extends AbstractController
                         $this->addFlash('warning', 'Une erreur est survenue');
                     }
                 }
-
             }
 
             /** @var Participant $participant */
@@ -194,14 +216,12 @@ final class SortieController extends AbstractController
 
                 $this->addFlash('warning','Vous êtes actuellement inscrit.');
                 return $this->redirectToRoute('sorties_list');
-
             }
             if (new \DateTime() > $sortie->getDateLimiteInscription()) {
                 $sortie->setEtatSortie(EtatSortie::CLOSED);
                 $this->addFlash('warning','La sortie n\'est plus disponible');
                 return $this->redirectToRoute('sorties_list');
             }
-
 
             $sortie->addListeParticipant($participant);
             $em->persist($sortie);
@@ -221,7 +241,6 @@ final class SortieController extends AbstractController
             $this->addFlash('warning', 'Vous n\'êtes pas inscrit à cette sortie.');
             return $this->redirectToRoute('sorties_list');
         }
-
 
         $sortie->removeListeParticipant($participant);
         $em->persist($sortie);
