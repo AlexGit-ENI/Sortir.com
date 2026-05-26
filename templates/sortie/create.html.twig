@@ -1,8 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <main>
-        {{ form(createSortieForm) }}
+    <>
+        {{ form_start(createSortieForm) }}
+        {{ form_row(createSortieForm.nom) }}
+        {{ form_row(createSortieForm.dateHeureDebut) }}
+        {{ form_row(createSortieForm.dateLimiteInscription) }}
+        {{ form_row(createSortieForm.nbInscriptionsMax) }}
+        {{ form_row(createSortieForm.duree) }}
+        {{ form_row(createSortieForm.description) }}
+        {{ form_row(createSortieForm.lieu) }}
+        <button type="submit">Créer</button>
+        {{ form_row(createSortieForm._token) }}
+        {{ form_end(createSortieForm) }}
+
+
 
 
     </main>

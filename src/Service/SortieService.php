@@ -28,8 +28,8 @@ class SortieService
     public function create(Sortie $sortie, Participant $participant){
 
 
-        $dateDuJour = new \DateTime();
-        $datePlusUnAn = new \DateTime();
+        $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $datePlusUnAn = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $datePlusUnAn ->modify('+1 year');
         $dateDebut = $sortie->getDateHeureDebut();
         $dateLimiteInscription = $sortie->getDateLimiteInscription();
@@ -58,8 +58,6 @@ class SortieService
         if($dateDebut>$datePlusUnAn){
             throw new Exception("La date de début de l'évenement est trop lointaine. Maximum: 1 an");
         }
-
-
 
 
         $this->entityManager->persist($sortie);
