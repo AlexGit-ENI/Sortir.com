@@ -125,7 +125,7 @@ class SortieService
             return $sortie;
         }
 
-        // Si une sortie autant ou plus d'inscrit, elle devient Cloturée
+        // Si une sortie est complete ou bien que le delais est dépassé, elle devient Cloturée
         if($nbInscrits>=$nbInscritsMax || $dateDuJour>=$dateFinInscription ){
             $sortie->setEtatSortie(EtatSortie::CLOSED);
             return $sortie;
