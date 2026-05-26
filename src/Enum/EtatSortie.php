@@ -10,5 +10,5 @@ enum EtatSortie: string
     case CURRENT= 'En cours';
     case PAST = 'Passée';
     case CANCELLED = 'Annulé';
-
+    case ARCHIVED = 'Archivé';
 }

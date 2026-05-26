@@ -10,8 +10,10 @@ use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieService;
+use Doctrine\ORM\Mapping as ORM;
 use DateTimeZone;
 use Exception;
+use mysql_xdevapi\Warning;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +29,7 @@ final class SortieController extends AbstractController
     //
 
     #[Route('', name: 'list')]
-    public function list(SiteRepository $siteRepository, SortieRepository $sortieRepository, Request $request): Response
+    public function list(SiteRepository $siteRepository, SortieRepository $sortieRepository,  SortieService $sortieService, Request $request): Response
     {
         // On récupére tous les sites pour les passer au formulaire filtre (SiteSelect)
         $sites = $siteRepository->findAll();
@@ -39,8 +41,8 @@ final class SortieController extends AbstractController
 
         $form->handleRequest($request);
 
-        // Par défaut, on affiche toutes les sorties
-        $sorties = $sortieRepository->findAll();
+        // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
+        $sorties = $sortieRepository->findAllAndUpdate();
 
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
         if($form->isSubmitted()) {
@@ -164,8 +166,10 @@ final class SortieController extends AbstractController
 
 
         #[Route('/{id}/inscription', name: 'inscription', requirements: ['id' => '\d+'], methods: ['GET'])]
-        public function inscription(Sortie $sortie, EntityManagerInterface $em,): Response {
+        public function inscription(Sortie $sortie, EntityManagerInterface $em, SortieService $sortieService): Response {
             $maxInscription = $sortie->getNbInscriptionsMax();
+            $sortie = $sortieService->updateEtatSortie($sortie);
+
 
             // Vérifier que l'EtatSortie soit à Ouverte pour s'inscrire
             if($sortie->getEtatSortie() !=  EtatSortie::OPEN) {
@@ -226,4 +230,5 @@ final class SortieController extends AbstractController
         $this->addFlash('success', 'Vous avez bien été désinscrit de la sortie. Connard on est pas assez bien pour vous?');
         return $this->redirectToRoute('sorties_list');
     }
+
 }

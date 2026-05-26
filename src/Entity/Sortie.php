@@ -205,7 +205,6 @@ class Sortie
         $this->lieu = $lieu;
         return $this;
     }
-
     public function getEtatSortie(): ?EtatSortie
     {
         return $this->etatSortie;
