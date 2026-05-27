@@ -85,4 +85,25 @@ class SortieRepository extends ServiceEntityRepository
         $query = $querybuilder->getQuery();
         return $query->getResult();
     }
+
+    public function searchSortiesByDate(string $dateMin, string $dateMax)
+    {
+        $querybuilder = $this->createQueryBuilder("sortie");
+        $querybuilder->andWhere(
+            $querybuilder->expr()->between("sortie.dateHeureDebut", ":dateMin", ":dateMax")
+        );
+        $querybuilder->setParameter("dateMin", $dateMin);
+        $querybuilder->setParameter("dateMax", $dateMax);
+        $query = $querybuilder->getQuery();
+        return $query->getResult();
+    }
+
+    public function findSortiesBeforeDate(\DateTime $date){
+        $querybuilder = $this->createQueryBuilder("sortie");
+        $querybuilder->andWhere('sortie.dateHeureDebut < :date');
+        $querybuilder->setParameter('date', $date);
+        $querybuilder->orderBy('sortie.dateHeureDebut', 'DESC');
+        $query = $querybuilder->getQuery();
+        return $query->getResult();
+    }
 }

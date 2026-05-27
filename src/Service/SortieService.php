@@ -73,7 +73,10 @@ class SortieService
         $this->entityManager->flush();
     }
     public function findAllAndUpdate(): array {
-        $sorties = $this->sortieRepository->findAll();
+        $sorties = $this->sortieRepository->findBy(
+            [],
+            ['dateHeureDebut' => 'DESC'],
+        );
         foreach ($sorties as $sortie) {
             $this->updateEtatSortie($sortie);
             $this->persistAndFlush($sortie);
@@ -153,5 +156,9 @@ class SortieService
         return $this->sortieRepository->searchSortieByTerme(trim(strtolower($termeRecherche)));
     }
 
+    public function filterSortiesByDate(string $dateMin, string $dateMax): array
+    {
+        return $this->sortieRepository->searchSortiesByDate($dateMin, $dateMax);
+    }
 }
 

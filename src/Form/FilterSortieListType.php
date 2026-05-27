@@ -58,13 +58,13 @@ class FilterSortieListType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('date_debut', DateTimeType::class, [
+            ->add('dateMin', DateTimeType::class, [
                 'attr' => [
                     'class' => 'form-control',
                 ],
                 'required' => false,
             ])
-            ->add('date_limite_inscription', DateTimeType::class, [
+            ->add('dateMax', DateTimeType::class, [
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -76,8 +76,8 @@ class FilterSortieListType extends AbstractType
                 'multiple' => true,
                 'choices' => [
                     'Sorties dont je suis l\'organisateur·trice' => 'mySorties',
-                    'Sorties auxquelles je suis inscrit·e' => 'registeredAtSorties',
-                    'Sorties auxquelles je ne suis pas inscrit·e' => 'unregisteredAtSorties',
+                    'Sorties auxquelles je suis inscrit·e' => 'sortiesRegisteredAt',
+                    'Sorties auxquelles je ne suis pas inscrit·e' => 'sortiesUnregisteredAt',
                     'Sorties passées' => 'pastSorties'
                 ]
             ])
