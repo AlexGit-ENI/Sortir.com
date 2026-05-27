@@ -38,7 +38,7 @@ class SortieType extends AbstractType
                 'label' => 'Durée',
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 0,
+                    'min' => 30,
                     'max' => 1000,
                 ]
             ])
@@ -46,6 +46,7 @@ class SortieType extends AbstractType
                 'label' => 'Date limite d\'inscription',
                 'attr' => [
                     'class' => 'form-control',
+
                 ]
 
             ])
@@ -53,7 +54,7 @@ class SortieType extends AbstractType
                 'label' => 'Nombre d\'inscriptions max',
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 0,
+                    'min' => 1,
                     'max' => 50,
                 ]
 
