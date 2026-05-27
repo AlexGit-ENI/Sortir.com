@@ -156,6 +156,10 @@ final class SortieController extends AbstractController
                     $this->addFlash('danger', 'La sortie n\'existe pas');
                     return $this->redirectToRoute('sorties_list');
                 }
+                if($sortie->getEtatSortie() !== EtatSortie::CREATED) {
+                    $this->addFlash('danger', 'La sortie ne peut pas être modifier si elle a été publiée');
+                    return $this->redirectToRoute('sorties_list');
+                }
 
             } catch (Exception $e) {
                 $this->addFlash('danger', $e->getMessage());
@@ -306,4 +310,34 @@ final class SortieController extends AbstractController
         return $this->redirectToRoute('sorties_list');
     }
 
+    /*
+     * SUPPRIMER UNE SORTIE
+     */
+    #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function delete(
+        Sortie $sortie,
+        EntityManagerInterface $em
+    ): Response {
+
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+
+        if ($sortie->getEtatSortie() !== EtatSortie::CREATED) {
+            throw $this->createAccessDeniedException('Seule une sortie qui n\'a pas été publiée peut être supprimée.');
+        }
+
+        if ($sortie->getOrganisateur() !== $participant) {
+
+            throw $this->createAccessDeniedException(
+                'Seul l\'organisateur peut supprimer cette sortie.'
+            );
+        }
+
+        $em->remove($sortie);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été supprimée.');
+
+        return $this->redirectToRoute('sorties_list');
+    }
 }
