@@ -30,9 +30,8 @@ class SortieService
         $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $datePlusUnAn = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $datePlusUnAn ->modify('+1 year');
-        $dateDebut = $sortie->getDateHeureDebut();
-        $dateLimiteInscription = $sortie->getDateLimiteInscription();
-
+        $dateDebut = $sortie->getDateHeureDebut()->setTimezone(new DateTimeZone('Europe/Paris'));
+        $dateLimiteInscription = $sortie->getDateLimiteInscription()->setTimezone(new DateTimeZone('Europe/Paris'));
 
         $sortie->setOrganisateur($participant);
         $sortie->setSite($participant->getSite());
@@ -73,8 +72,10 @@ class SortieService
 
         $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
         $dateDebut = $sortie->getDateHeureDebut();
+        date_timezone_set($dateDebut, timezone_open('Europe/Paris'));
 
         $dateFinInscription = $sortie->getDateLimiteInscription();
+        date_timezone_set($dateFinInscription, timezone_open('Europe/Paris'));
 
         $nbInscrits = count($sortie->getListeParticipants());
         $nbInscritsMax = $sortie->getNbInscriptionsMax();
@@ -123,6 +124,11 @@ class SortieService
             $sortie->setEtatSortie(EtatSortie::CURRENT);
             return $sortie;
         }
+
+//        if ($sortie->getId() == 159) {
+//            $isBigger = $dateDuJour>$dateFinInscription;
+//            dd('date du jour', $dateDuJour, 'est plus grand que', 'date fin inscription', $dateFinInscription, ': ', $isBigger);
+//        }
 
         // Une sortie est CLOSED lorsqu'elle la date du jour dépasse la date limite d'inscription ou bien que le nb max d'inscrit est atteint
         if( $nbInscrits >= $nbInscritsMax || $dateDuJour>=$dateFinInscription ){
