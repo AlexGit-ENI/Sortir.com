@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Enum\EtatSortie;
+use App\Form\FilterSortieListType;
 use App\Form\SiteSelectType;
 use App\Form\SortieType;
 use App\Repository\LieuRepository;
@@ -37,7 +38,7 @@ final class SortieController extends AbstractController
         // On récupére tous les sites pour les passer au formulaire filtre (SiteSelect)
         $sites = $siteRepository->findAll();
 
-        $form = $this->createForm(SiteSelectType::class, null, [
+        $form = $this->createForm(FilterSortieListType::class, null, [
             'sites' => $sites,
             'method' => 'GET',
         ]);
@@ -45,7 +46,7 @@ final class SortieController extends AbstractController
         $form->handleRequest($request);
 
         // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
-        $sorties = $sortieRepository->findAllAndUpdate();
+        $sorties = $sortieService->findAllAndUpdate();
 
         // Ne pas récuprer les sorties archivées
         $sortiesNotArchived = [];
@@ -59,12 +60,20 @@ final class SortieController extends AbstractController
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
         if($form->isSubmitted()) {
 
-            $selectedSite = $request->query->get('site');
-            $sortiesNotArchived = $sortieRepository->findBy(['site' => $selectedSite]);
+            if($request->query->get('site')) {
+                $selectedSite = $request->query->get('site');
+                $sortiesNotArchived = $sortieRepository->findBy(['site' => $selectedSite]);
+            }
+
+            if($request->query->get('search')) {
+               $sortiesNotArchived =  $sortieService->searchSorties($request->query->get('search'));
+            }
+
+
         }
 
         return $this->render('sortie/list.html.twig', [
-            'siteSelectForm' => $form->createView(),
+            'filterSortieListForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
             'sorties' => $sortiesNotArchived,
 

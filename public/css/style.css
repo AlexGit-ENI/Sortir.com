@@ -1,0 +1,66 @@
+/* || Reset */
+* {
+    margin:0;
+padding:0;
+}
+
+/* || Variables  */
+:root {
+    --success: oklch(0.75 0.25 150 / 0.2 );
+    --delete: oklch(0.60 0.25 20);
+    --danger: oklch(0.75 0.25 20 / 0.2 );
+
+}
+
+/* || Form */
+.form-control{
+    box-sizing: border-box;
+    min-width: 44px;
+    padding: 8px;
+    margin-bottom: 32px;
+    border: 2px solid #e1e1e1;
+    box-shadow: 4px 4px 10px #e1e1e1;
+
+}
+
+
+
+button[type="submit"]{
+    box-sizing: border-box;
+    min-width: 44px;
+    padding: 16px;
+    margin-bottom: 32px;
+    border: 2px solid #e1e1e1;
+    box-shadow: 4px 4px 10px #e1e1e1;
+    font-size: 1.15rem;
+}
+
+label {
+    margin-right: 16px;
+}
+
+
+/* || Liste des sorties */
+
+.sortie-article{
+    padding: 1.25rem;
+}
+
+.sortie-meta{
+    font-size: 0.95rem;
+    margin-bottom: 2.6rem;
+}
+
+.sortie-article:nth-child(even){
+    background-color: #eee;
+}
+
+.success {
+    background-color: var(--success);
+    padding:16px;
+}
+
+.danger {
+    background-color: var(--danger);
+    padding:16px;
+}
