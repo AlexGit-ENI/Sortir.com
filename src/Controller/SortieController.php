@@ -171,7 +171,7 @@ final class SortieController extends AbstractController
             if($sortie->getOrganisateur() === $this->getUser()) {
                 if($updateSortieForm->isSubmitted() && $updateSortieForm->isValid()) {
                     try{
-                        $sortieService->updateSortie($sortie);
+                        $sortieService->persistAndFlush($sortie);
                         $this->addFlash('success', 'La sortie a été modifiée avec succès');
                         return $this->redirectToRoute('sorties_detail', ['id' => $sortie->getId()]);
                     } catch(Exception $e) {
