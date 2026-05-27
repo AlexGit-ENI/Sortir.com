@@ -38,6 +38,8 @@ class SortieType extends AbstractType
                 'label' => 'Durée',
                 'attr' => [
                     'class' => 'form-control',
+                    'min' => 0,
+                    'max' => 1000,
                 ]
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
@@ -51,6 +53,8 @@ class SortieType extends AbstractType
                 'label' => 'Nombre d\'inscriptions max',
                 'attr' => [
                     'class' => 'form-control',
+                    'min' => 0,
+                    'max' => 50,
                 ]
 
             ])
