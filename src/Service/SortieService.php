@@ -150,8 +150,7 @@ class SortieService
 
     public function searchSorties(string $termeRecherche): array
     {
-        $termeRecherche = strtolower($termeRecherche);
-        return $this->sortieRepository->searchSortieByTerme($termeRecherche);
+        return $this->sortieRepository->searchSortieByTerme(trim(strtolower($termeRecherche)));
     }
 
 }
