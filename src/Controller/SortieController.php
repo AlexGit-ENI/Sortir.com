@@ -197,8 +197,10 @@ final class SortieController extends AbstractController
 
 
             // Vérifier que l'EtatSortie soit à Ouverte pour s'inscrire
+
             if($sortie->getEtatSortie() !=  EtatSortie::OPEN) {
                 $this->addFlash('warning', 'Il faut que la sortie soit ouverte pour s\'inscrire');
+                return $this->redirectToRoute('sorties_list');
             }
 
             if (count($sortie->getListeParticipants()) >= $maxInscription) {
