@@ -60,7 +60,7 @@ final class SortieController extends AbstractController
         if($form->isSubmitted()) {
 
             $selectedSite = $request->query->get('site');
-            $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
+            $sortiesNotArchived = $sortieRepository->findBy(['site' => $selectedSite]);
         }
 
         return $this->render('sortie/list.html.twig', [
