@@ -32,25 +32,33 @@ class SortieType extends AbstractType
                 'label' => 'Début de la sortie',
                 'attr' => [
                     'class' => 'form-control',
-                ]
+                ],
+                'model_timezone' => 'Europe/Paris',
+                'view_timezone' => 'Europe/Paris'
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée',
                 'attr' => [
                     'class' => 'form-control',
+                    'min' => 30,
+                    'max' => 1000,
                 ]
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription',
                 'attr' => [
                     'class' => 'form-control',
-                ]
+                ],
+                'model_timezone' => 'Europe/Paris',
+                'view_timezone' => 'Europe/Paris'
 
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
                 'label' => 'Nombre d\'inscriptions max',
                 'attr' => [
                     'class' => 'form-control',
+                    'min' => 1,
+                    'max' => 50,
                 ]
 
             ])
