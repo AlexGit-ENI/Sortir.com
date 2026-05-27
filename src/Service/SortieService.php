@@ -114,7 +114,6 @@ class SortieService
 
         // Si une sortie passe sa date de fin, elle devient PAST
         if ($dateDuJour>$dateFinSortie) {
-
             $sortie->setEtatSortie(EtatSortie::PAST);
             return $sortie;
         }
@@ -125,12 +124,14 @@ class SortieService
             return $sortie;
         }
 
-        // Une sortie est CLOSED lorsqu'elle la date du jour dépasse la date limite d'inscription
-        if($dateDuJour>=$dateFinInscription ){
+        // Une sortie est CLOSED lorsqu'elle la date du jour dépasse la date limite d'inscription ou bien que le nb max d'inscrit est atteint
+        if( $nbInscrits >= $nbInscritsMax || $dateDuJour>=$dateFinInscription ){
             $sortie->setEtatSortie(EtatSortie::CLOSED);
             return $sortie;
         }
 
+        // Dans tous les autres cas, l'état de la sortie devient OPEN
+        $sortie->setEtatSortie(EtatSortie::OPEN);
         return $sortie;
     }
 
