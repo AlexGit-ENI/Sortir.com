@@ -125,13 +125,13 @@ class SortieService
             return $sortie;
         }
 
-//        if ($sortie->getId() == 159) {
+//        if ($sortie->getId() == 161) {
 //            $isBigger = $dateDuJour>$dateFinInscription;
 //            dd('date du jour', $dateDuJour, 'est plus grand que', 'date fin inscription', $dateFinInscription, ': ', $isBigger);
 //        }
 
         // Une sortie est CLOSED lorsqu'elle la date du jour dépasse la date limite d'inscription ou bien que le nb max d'inscrit est atteint
-        if( $nbInscrits >= $nbInscritsMax || $dateDuJour>=$dateFinInscription ){
+        if( $nbInscrits >= $nbInscritsMax || $dateDuJour>$dateFinInscription ){
             $sortie->setEtatSortie(EtatSortie::CLOSED);
             return $sortie;
         }

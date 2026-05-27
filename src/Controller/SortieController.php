@@ -245,6 +245,12 @@ final class SortieController extends AbstractController
         /** @var Participant $participant */
         $participant = $this->getUser();
 
+        $dateDuJour = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        if ($dateDuJour >$sortie->getDateLimiteInscription()) {
+            $this->addFlash('warning', 'La date limite a été dépassée');
+            return $this->redirectToRoute('sorties_list');
+        }
+
         if (!$sortie->getListeParticipants()->contains($participant)) {
             $this->addFlash('warning', 'Vous n\'êtes pas inscrit à cette sortie.');
             return $this->redirectToRoute('sorties_list');
