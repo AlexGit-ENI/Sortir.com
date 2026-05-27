@@ -41,6 +41,7 @@ class SortieCreateType extends AbstractType
                 'label' => 'Date limite d\'inscription',
                 'attr' => [
                     'class' => 'form-control',
+
                 ]
 
             ])
