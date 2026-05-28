@@ -38,14 +38,18 @@
                         <p>{{ sortie.description }}</p>
                         <p> Statut :  {{ sortie.etatSortie.value }}</p>
 
-                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN')%}
+                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
                             {% if not (app.user in sortie.listeParticipants) %}
-                                <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
+                                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                                    <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
+                                {% endif %}
                             {% else %}
                                 <a href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister ici</a>
-                            {%endif%}
-                        {%endif%}
-                        {% if app.user == sortie.organisateur and sortie.etatSortie != constant('App\\Enum\\EtatSortie::CURRENT') %}
+                            {% endif %}
+                        {% endif %}
+                        {% if app.user == sortie.organisateur
+                            and sortie.etatSortie != constant('App\\Enum\\EtatSortie::CURRENT')
+                            and sortie.etatSortie != constant('App\\Enum\\EtatSortie::CANCELLED') %}
                             <a href="{{ path('sorties_annuler', {'id': sortie.id}) }}">Annuler la sortie</a>
                         {% endif %}
                         {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
@@ -60,8 +64,5 @@
             {% else %}
                 <p>Aucune sortie n'a été trouvée</p>
             {% endif %}
-        </div>
-
-    </main>
 
 {% endblock %}
