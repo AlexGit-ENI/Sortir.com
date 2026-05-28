@@ -74,7 +74,7 @@ class SortieRepository extends ServiceEntityRepository
         $querybuilder->leftJoin("sortie.lieu", "lieu");
         $querybuilder->leftJoin("lieu.ville", "ville");
         $querybuilder->andWhere(
-            $querybuilder->expr()->orX(
+            $querybuilder->expr()->orX( // Équivalent au OR sql
                 $querybuilder->expr()->like("sortie.nom", ":termeRecherche"),
                 $querybuilder->expr()->like("sortie.description", ":termeRecherche"),
                 $querybuilder->expr()->like("lieu.nom", ":termeRecherche"),

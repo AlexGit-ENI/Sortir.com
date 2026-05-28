@@ -27,6 +27,7 @@ class FilterSortieListType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $today = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
 
         $builder
             // Pour que le select soit relié à une entité
@@ -53,24 +54,29 @@ class FilterSortieListType extends AbstractType
             ->add('search', SearchType::class, [
                 'label' => 'Rechercher',
                 'attr' => [
-                    'placeholder' => 'Rechercher',
+                    'placeholder' => 'Je cherche un lieu, une sortie, une ville...',
                     'class' => 'form-control',
                 ],
                 'required' => false,
             ])
             ->add('dateMin', DateTimeType::class, [
+                'label' => ' Entre le ',
                 'attr' => [
                     'class' => 'form-control',
                 ],
                 'required' => false,
+                'data' => $today,
             ])
             ->add('dateMax', DateTimeType::class, [
+                'label' => ' Et le',
                 'attr' => [
                     'class' => 'form-control',
                 ],
                 'required' => false,
+                'data' => $today,
             ])
             ->add('checkboxes', ChoiceType::class, [
+                'label' => 'Je filtre par : ',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
@@ -79,7 +85,8 @@ class FilterSortieListType extends AbstractType
                     'Sorties auxquelles je suis inscrit·e' => 'sortiesRegisteredAt',
                     'Sorties auxquelles je ne suis pas inscrit·e' => 'sortiesUnregisteredAt',
                     'Sorties passées' => 'pastSorties'
-                ]
+                ],
+
             ])
 //            ->add('submit', SubmitType::class, [
 //                'label' => 'Rechercher',
