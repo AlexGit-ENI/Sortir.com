@@ -64,5 +64,61 @@
             {% else %}
                 <p>Aucune sortie n'a été trouvée</p>
             {% endif %}
+        </div>
 
+        <div class="container">
+            {% if sorties %}
+                {% for sortie in sorties %}
+                    <div class="card text-center  w-50">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="true" href="{{ path('sorties_detail', {'id': sortie.id}) }}">Detail</a>
+                                </li>
+                                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                                </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link disabled" aria-disabled="true">{{ sortie.etatSortie.value }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <li class="card-body">
+                            <h5 class="card-title">{{ sortie.nom }}</h5>
+
+
+                            <p class="card">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</li>
+                                    <li class="list-group-item">Organisé par le site de : {{ sortie.site.nom }}</li>
+                                    <li class="list-group-item">Organisateur : <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></li>
+                                    <li class="list-group-item">Inscriptions : {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
+                                </ul>
+                                <div class="card-footer">
+                                    Date limite d'inscription : {{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}
+                                </div>
+                            </p>
+
+
+                            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
+                                {% if not (app.user in sortie.listeParticipants) %}
+                                    {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                                        <a class="btn btn-primary" href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a class="btn btn-danger" href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+    </main>
 {% endblock %}
