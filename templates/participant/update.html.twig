@@ -3,26 +3,36 @@
 {% block title %}Nouveau participant{% endblock %}
 
 {% block body %}
-    <h1>Mon Profil</h1>
+    <div class="container">
+    <h1 class="text-center">Mon Profil</h1>
 
     {{ form_start(form) }}
 
-    {{ form_row(form.username) }}
-    {{ form_row(form.prenom) }}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.telephone) }}
-    {{ form_row(form.mail) }}
-    {{ form_row(form.plainPassword) }}
-    {{ form_row(form.site) }}
-    {#    {{ form_row(form.photo) }}#}
-
-    <button type="submit" class="btn">Enregistrer</button>
-    {#    <button type="submit">Annuler</button>#}
-    <a href="{{ path('sorties_list') }}">Annuler</a>
-
-    {#//ROUTE A MODIFIER//#}
-
-
+        <div class="mb-3">
+            {{ form_row(form.username) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.prenom) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.nom) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.telephone) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.mail) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.plainPassword) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.site) }}
+        </div>
+        <button type="submit" class="btn btn-primary" >Enregistrer</button>
+        <a role="button" class="btn btn-warning" href="{{ path('sorties_list') }}">Annuler</a>
 
     {{ form_end(form) }}
+
+    </div>
 {% endblock %}

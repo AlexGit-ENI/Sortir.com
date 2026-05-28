@@ -5,8 +5,23 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ participant.username }}</h1>
-    <p>{{ participant.nom }}</p>
-    <p>{{ participant.prenom }}</p>
-    <a href="{{ path('sorties_list') }}">Retour</a>
+    <div class="container">
+        <h1 class="text-center">{{ participant.username }}</h1>
+
+        <div class="d-flex justify-content-center">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <i class="fa-solid fa-user-graduate"></i> {{ participant.prenom }} {{ participant.nom }}
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><i class="fa-solid fa-phone"></i> {{ participant.telephone }}</li>
+                    <li class="list-group-item"><i class="fa-solid fa-at"></i> {{ participant.mail }}</li>
+                    <li class="list-group-item"><i class="fa-solid fa-school"></i> {{ participant.site.nom }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <a role="button" class="btn btn-primary" href="{{ path('sorties_list') }}" style="margin-top: 2rem">Retour</a>
+        </div>
+    </div>
 {% endblock %}
