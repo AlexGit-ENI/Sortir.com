@@ -5,20 +5,33 @@
 {% block body %}
 
 <main>
+    <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+        <h1 class="text-center">Archives</h1>
+    </div>
+    <div class="container">
     {% if sorties %}
-        <table>
+        <table class="table table-striped table-hover table-bordered">
             <tr>
                 <th>Nom</th>
+                <th>Organisateur</th>
+                <th>Site</th>
+                <th>Date</th>
+                <th>lieu</th>
                 <th>Détails</th>
             </tr>
             {% for sortie in sorties %}
             <tr>
                 <td>{{ sortie.nom }}</td>
-                <td><a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a></td>
+                <td><a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></td>
+                <td>{{ sortie.site.nom }}</td>
+                <td>{{ sortie.dateHeureDebut|date('d/m/Y') }}</td>
+                <td>{{ sortie.lieu.nom }}</td>
+                <td><a href="{{ path('sorties_detail', {'id': sortie.id}) }}"><i class="fa-solid fa-up-right-from-square"></i></a></td>
             </tr>
             {% endfor %}
         </table>
     {% endif %}
+    </div>
 </main>
 
 {% endblock %}

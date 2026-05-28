@@ -171,7 +171,7 @@ final class SortieController extends AbstractController
     public function archives(SiteRepository $siteRepository, SortieRepository $sortieRepository,  SortieService $sortieService, Request $request): Response
     {
         // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
-        $sorties = $sortieRepository->findAllAndUpdate();
+        $sorties = $sortieService->findAllAndUpdate();
 
         // Ne pas récuprer les sorties archivées
         $sortiesArchived = [];
@@ -374,6 +374,8 @@ final class SortieController extends AbstractController
                 'Seul l\'organisateur peut annuler cette sortie.'
             );
         }
+
+        //TODO Gérer l'accès à la route
 
         $sortie->setEtatSortie(EtatSortie::CANCELLED);
 

@@ -50,12 +50,21 @@ class FilterSortieListType extends AbstractType
                 /* Pas de selection multiple */
                 'multiple' => false,
                 'required' => false,
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                ]
             ])
             ->add('search', SearchType::class, [
                 'label' => 'Rechercher',
                 'attr' => [
                     'placeholder' => 'Je cherche un lieu, une sortie, une ville...',
                     'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'form-label',
                 ],
                 'required' => false,
             ])
@@ -66,11 +75,17 @@ class FilterSortieListType extends AbstractType
                 ],
                 'required' => false,
                 'data' => $today,
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
             ])
             ->add('dateMax', DateTimeType::class, [
                 'label' => ' Et le',
                 'attr' => [
                     'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'form-label',
                 ],
                 'required' => false,
                 'data' => $today,
@@ -86,6 +101,14 @@ class FilterSortieListType extends AbstractType
                     'Sorties auxquelles je ne suis pas inscrit·e' => 'sortiesUnregisteredAt',
                     'Sorties passées' => 'pastSorties'
                 ],
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'style' => 'display:flex;',
+                ],
+
 
             ])
 //            ->add('submit', SubmitType::class, [

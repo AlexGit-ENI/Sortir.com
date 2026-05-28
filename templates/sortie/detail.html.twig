@@ -4,11 +4,11 @@
 
 {% block body %}
     <main>
+        <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+            <h1 class="text-center">Détail de la sortie : {{ sortie.nom }}</h1>
+        </div>
 {# **************************************** **#}
         <div class="container">
-
-            <h1 class="text-center">Détail de la sortie : {{ sortie.nom }}</h1>
-
             {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
                 <div class="card border-success mb-3" style="max-width: 18rem;">
                     <div class="card-header">Statut</div>
@@ -39,10 +39,20 @@
                     <div class="card-header">Statut</div>
                     <div class="card-body">
             {% endif %}
-                        <h5 class="card-title">{{ sortie.etatSortie.value }}</h5>
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CURRENT') %}
+                <div class="card border-warning mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body">
+            {% endif %}
+                        <div class="d-flex" style="justify-content: space-between; align-items: center;">
+                            <h5 class="card-title">{{ sortie.etatSortie.value }}</h5>
+                            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+                                <a role="button" class="btn btn-outline-warning" href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+                                <a role="button" class="btn btn-success" href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-
 
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col">
@@ -124,16 +134,9 @@
 
 
             </div>
-
         </div>
 {# **************************************** **#}
 
-        <br>
-
-        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
-            <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
-            <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
-        {% endif %}
 
     </main>
 {% endblock %}
