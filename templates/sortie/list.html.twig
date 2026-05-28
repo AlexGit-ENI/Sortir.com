@@ -50,14 +50,13 @@
 
                             <p class="card">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Débute le {{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</li>
-                                    <li class="list-group-item">A {{ sortie.lieu.nom }} dans la ville de {{ sortie.lieu.ville.nom }}</li>
-                                    <li class="list-group-item">Dure {{ sortie.duree }} minutes</li>
-                                    <li class="list-group-item">Par <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a> du site de {{ sortie.site.nom }}</li>
-                                    <li class="list-group-item">Inscriptions : {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-flag-checkered"></i> {{ sortie.dateHeureDebut | date('d/m/Y H:i') }} - <i class="fa-solid fa-hourglass-half"></i> {{ sortie.duree }} minutes</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-location-dot"></i> {{ sortie.lieu.nom }} - <i class="fa-solid fa-city"></i> {{ sortie.lieu.ville.nom }}</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-user-graduate"></i> <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a> - <i class="fa-solid fa-school"></i> {{ sortie.site.nom }}</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-users"></i> {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
                                 </ul>
                                 <div class="card-footer">
-                                    Inscriptions jusqu'au {{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}
+                                    <i class="fa-solid fa-bell"></i> {{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}
                                 </div>
                             </p>
 
