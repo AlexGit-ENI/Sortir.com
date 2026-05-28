@@ -4,43 +4,62 @@
 
 {% block body %}
     <main>
-        <h1>Détail de la sortie</h1>
+{# **************************************** **#}
+        <div class="container">
 
-        <label>Nom de la sortie :</label>
-        <span>{{ sortie.nom }}</span><br>
+        <h1 class="text-center">Détail de la sortie : {{ sortie.nom }}</h1>
 
-        <label>Date et heure de la sortie :</label>
-        <span>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</span><br>
+        <div class="card border-success mb-3" style="max-width: 18rem;">
+            <div class="card-header">Statut</div>
+            <div class="card-body text-success">
+                <h5 class="card-title">{{ sortie.etatSortie.value }}</h5>
+            </div>
+        </div>
 
-        <label>Date limite de l'inscription :</label>
-        <span>{{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</span><br>
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                Informations
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Début : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</li>
+                <li class="list-group-item">Fin inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</li>
+                <li class="list-group-item">Nombre d'inscrit.es : {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
+                <li class="list-group-item">Durée : {{ sortie.duree }} minutes</li>
+            </ul>
+        </div>
 
-        <label>Nombre de places disponibles :</label>
-        <span>{{ sortie.nbInscriptionsMax }}</span><br>
+        <div class="card">
+            <div class="card-header">
+                Description
+            </div>
+            <div class="card-body">
+                <figure>
+                    <blockquote class="blockquote">
+                        <p>{{ sortie.description }}</p>
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                        Organisé par <cite title="Source Title"><a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></cite> du site de {{ sortie.site.nom }}
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
 
-        <label>Durée :</label>
-        <span>{{ sortie.duree }} minutes</span><br>
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                Lieu
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Nom du lieu : {{ sortie.lieu.nom }}</li>
+                <li class="list-group-item">Ville : {{ sortie.lieu.ville.nom }}</li>
+                <li class="list-group-item">Code postal : {{ sortie.lieu.ville.codePostal }}</li>
+                <li class="list-group-item">Latitude : {{ sortie.lieu.latitude }}</li>
+                <li class="list-group-item">Longitude : {{ sortie.lieu.longitude }}</li>
+            </ul>
+        </div>
 
-        <label>Description et infos :</label>
-        <span>{{ sortie.description }}</span><br>
 
-        <label>Ville Organisatrice :</label>
-        <span>{{ sortie.lieu.ville.nom }}</span><br>
-
-        <label>Lieu :</label>
-        <span>{{ sortie.lieu.nom }}</span><br>
-
-        <label>Code Postal :</label>
-        <span>{{ sortie.lieu.ville.codePostal }}</span><br>
-
-        <label>Latitude :</label>
-        <span>{{ sortie.lieu.latitude }}</span><br>
-
-        <label>Longitude :</label>
-        <span>{{ sortie.lieu.longitude }}</span><br>
-
-        <label> Etat de la sortie : </label>
-        <span> {{ sortie.etatSortie.value }}</span>
+        </div>
+{# **************************************** **#}
 
         <br>
 
