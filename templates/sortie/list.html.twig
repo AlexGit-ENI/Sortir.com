@@ -10,10 +10,16 @@
 
         <!-- filtre par site -->
         {# ajouter un bouton HTML simple au lieu d'un créé avec le fomr pour qu'il ne figure pas dans l'URL  #}
-        {{ form_start(siteSelectForm) }}
-        {{ form_row(siteSelectForm.site) }}
+        {{ form_start(filterSortieListForm) }}
+        {{ form_row(filterSortieListForm.site) }}
+        {{ form_row(filterSortieListForm.search) }}
+        {{ form_row(filterSortieListForm.dateMin) }}
+        {{ form_row(filterSortieListForm.dateMax) }}
+        {{ form_row(filterSortieListForm.checkboxes) }}
+
+
         <button type="submit">Rechercher</button>
-        {{ form_end(siteSelectForm) }}
+        {{ form_end(filterSortieListForm) }}
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% if sorties %}

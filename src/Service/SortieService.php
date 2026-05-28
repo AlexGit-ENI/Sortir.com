@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Enum\EtatSortie;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,10 +16,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class SortieService
 {
 
+    private $sortieRepository;
+
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager){
+    public function __construct(EntityManagerInterface $entityManager, SortieRepository $sortieRepository){
         $this->entityManager = $entityManager;
+        $this->sortieRepository = $sortieRepository;
     }
 
     /**
@@ -67,6 +71,19 @@ class SortieService
         $this->entityManager->persist($sortie);
         $this->entityManager->flush();
     }
+    public function findAllAndUpdate(): array {
+        $sorties = $this->sortieRepository->findBy(
+            [],
+            ['dateHeureDebut' => 'DESC'],
+        );
+        foreach ($sorties as $sortie) {
+            $this->updateEtatSortie($sortie);
+            $this->persistAndFlush($sortie);
+        }
+        return $sorties;
+    }
+
+
 
     public function updateEtatSortie(Sortie $sortie): Sortie{
 
@@ -141,5 +158,14 @@ class SortieService
         return $sortie;
     }
 
+    public function searchSorties(string $termeRecherche): array
+    {
+        return $this->sortieRepository->searchSortieByTerme(trim(strtolower($termeRecherche)));
+    }
+
+    public function filterSortiesByDate(string $dateMin, string $dateMax): array
+    {
+        return $this->sortieRepository->searchSortiesByDate($dateMin, $dateMax);
+    }
 }
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Enum\EtatSortie;
+use App\Form\FilterSortieListType;
 use App\Form\SiteSelectType;
 use App\Form\SortieType;
 use App\Repository\LieuRepository;
@@ -37,7 +38,7 @@ final class SortieController extends AbstractController
         // On récupére tous les sites pour les passer au formulaire filtre (SiteSelect)
         $sites = $siteRepository->findAll();
 
-        $form = $this->createForm(SiteSelectType::class, null, [
+        $form = $this->createForm(FilterSortieListType::class, null, [
             'sites' => $sites,
             'method' => 'GET',
         ]);
@@ -45,7 +46,7 @@ final class SortieController extends AbstractController
         $form->handleRequest($request);
 
         // Par défaut, on affiche toutes les sorties avec une mise à jour de leurs états
-        $sorties = $sortieRepository->findAllAndUpdate();
+        $sorties = $sortieService->findAllAndUpdate();
 
         // Ne pas récuprer les sorties archivées
         $sortiesNotArchived = [];
@@ -57,14 +58,108 @@ final class SortieController extends AbstractController
         }
 
         // Si le filtre a été utilisé, on récupère l'id du site et on l'utilise pour chercher les sorties par site dans la BDD
-        if($form->isSubmitted()) {
+        if($form->isSubmitted() && $form->isValid()) {
 
-            $selectedSite = $request->query->get('site');
-            $sorties = $sortieRepository->findBy(['site' => $selectedSite]);
+            // Variables qui permettent de vérifier si un élèment du formulaire a été rempli
+            $site = $request->query->get('site');
+            $search = $request->query->get('search');
+            $dateMin = $request->query->get('dateMin');
+            $dateMax = $request->query->get('dateMax');
+
+
+            if($site) {
+                try {
+                    // Réutilisation du $sortiesNotArchived puisque c'est le modèle qui est passsé au template
+                    $sortiesNotArchived = $sortieRepository->findBy(['site' => $site],
+                        ['dateHeureDebut' => 'DESC']);
+                } catch (Exception $exception) {
+                    $this->addFlash('warning', "Impossible de rechercher les sorties par site : ".$exception->getMessage());
+                }
+
+                // Si un site a précédemment été sélectionné, je peux retrouver la liste de tous les évenements de tous les sites en enlevant le site
+                if($site=""){
+                    $sortiesNotArchived = $sortieRepository->findBy(['site' => $site],
+                        ['dateHeureDebut' => 'DESC']);
+                }
+            }
+
+            if($search) {
+                try {
+                    $sortiesNotArchived =  $sortieService->searchSorties($search);
+                } catch (Exception $exception) {
+                    $this->addFlash('warning', 'Une erreur est survenue lors de la recherche' . $exception->getMessage());
+                }
+            }
+
+            if($dateMin) {
+
+                if($dateMax) {
+                    try {
+                        $sortiesNotArchived = $sortieService->filterSortiesByDate($request->query->get('dateMin'), $request->query->get('dateMax'));
+                    } catch (Exception $exception) {
+                        $this->addFlash('warning', 'Une erreur est survenue lors de la recherche par date' . $exception->getMessage());
+                    }
+                } else {
+                    $this->addFlash('danger', 'Il faut également préciser une date de fin de recherche');
+                }
+
+            }
+
+            if($request->query->all('checkboxes')) {
+                // je récupère l'utilisateur ici afin qu'il soit réutilisable dans plusieurs conditions
+                $participant = $this->getUser();
+                $isRegistered = in_array($participant, $sortie->getListeParticipants()->toArray());
+
+                foreach ($request->query->all('checkboxes') as $checkbox) {
+
+                   switch ($checkbox) {
+                       case 'mySorties':
+                           // Je cherche les sorties reliées à l'organisatuer par son ID
+                           $sortiesNotArchived = $sortieRepository->findBy(['organisateur' => $participant->getId()], ['dateHeureDebut' => 'DESC'] );
+                           break;
+                       case 'sortiesRegisteredAt':
+                           // Je vide le tableaux des sorties pour s'assurer qu'il soit vide au départ
+                           $sortiesNotArchived = [];
+
+                           // Je récup toutes les sorties (find aLL AND UPDAte?)
+                           $sorties = $sortieRepository -> findAll();
+
+                           foreach ($sorties as $sortie) {
+                               // Je transforme l'attribut listeParticipants de chaque sortie en tableau et cherche si elle comporte l'utilisateur courant
+                               if (in_array($participant, $sortie->getListeParticipants()->toArray())) {
+                                    $sortiesNotArchived[] = $sortie;
+                               }
+                           }
+                           break;
+
+                       case 'sortiesUnregisteredAt':
+                           $sortiesNotArchived = [];
+                           $sorties = $sortieRepository -> findAll();
+                           foreach ($sorties as $sortie) {
+                               if (!(in_array($participant, $sortie->getListeParticipants()->toArray()))) {
+                                   $sortiesNotArchived[] = $sortie;
+                               }
+                           }
+                           break;
+
+                        case 'pastSorties':
+                            // Je cherche les sorties antérieures à la date du jour
+                            $sortiesNotArchived = $sortieRepository->findSortiesBeforeDate(new \DateTime("now", new \DateTimeZone("Europe/Paris")));
+                            break;
+                        default:
+                            $this->addFlash('danger', 'Une erreur est survenue lors de l\'utilisation des filtres');
+                            break;
+                   }
+
+                   }
+                }
+
+
+
         }
 
         return $this->render('sortie/list.html.twig', [
-            'siteSelectForm' => $form->createView(),
+            'filterSortieListForm' => $form->createView(),
             // on passe l'attribut sorties pour l'afficher dans le template dans les deux cas (toutes et filtrées par site)
             'sorties' => $sortiesNotArchived,
 
