@@ -61,9 +61,7 @@ class SortieService
             throw new Exception("La date de début de l'évenement est trop lointaine. Maximum: 1 an");
         }
 
-
-        $this->entityManager->persist($sortie);
-        $this->entityManager->flush();
+        $this->persistAndFlush($sortie);
     }
 
     public function persistAndFlush(Sortie $sortie): void
