@@ -3,26 +3,47 @@
 {% block title %}Modifier une sortie{% endblock %}
 
 {% block body %}
-
-    {{ form_start(sortieUpdateForm) }}
-        {{ form_row(sortieUpdateForm.nom) }}
-        {{ form_row(sortieUpdateForm.dateHeureDebut) }}
-        {{ form_row(sortieUpdateForm.dateLimiteInscription) }}
-        {{ form_row(sortieUpdateForm.nbInscriptionsMax) }}
-        {{ form_row(sortieUpdateForm.duree) }}
-        {{ form_row(sortieUpdateForm.description) }}
-        {{ form_row(sortieUpdateForm.lieu) }}
-        <button type="submit">Modifier</button>
-        <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
-        <a href="{{ path('sorties_delete', {'id': sortie.id}) }}">Supprimer</a>
-        {{ form_row(sortieUpdateForm._token) }}
-        <div>
-            <p>Rue : </p>
-            <p> {{ sortieUpdateForm.lieu.vars.data.rue}}</p>
-        </div>
-        <div>
-        <p>Coordonnées : </p>
-        <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
-        </div>
-    {{ form_end(sortieUpdateForm) }}
+    <main>
+    <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+        <h1 class="text-center">Créer une sortie</h1>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+            {{ form_start(sortieUpdateForm) }}
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.nom) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.dateHeureDebut) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.dateLimiteInscription) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.nbInscriptionsMax) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.duree) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.description) }}
+                </div>
+                <div class="mb-3">
+                {{ form_row(sortieUpdateForm.lieu) }}
+                </div>
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+                <a role="button" class="btn btn-success" href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                <a role="button" class="btn btn-danger" href="{{ path('sorties_delete', {'id': sortie.id}) }}">Supprimer</a>
+                {{ form_row(sortieUpdateForm._token) }}
+                <div>
+                    <p>Rue : </p>
+                    <p> {{ sortieUpdateForm.lieu.vars.data.rue}}</p>
+                </div>
+                <div>
+                <p>Coordonnées : </p>
+                <p>[ {{ sortieUpdateForm.lieu.vars.data.latitude}}, {{ sortieUpdateForm.lieu.vars.data.longitude}} ]</p>
+                </div>
+            {{ form_end(sortieUpdateForm) }}
+    </main>
 {% endblock %}
