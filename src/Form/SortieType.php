@@ -74,7 +74,7 @@ class SortieType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 1,
+                    'min' => 3,
                     'max' => 50,
                 ]
 
