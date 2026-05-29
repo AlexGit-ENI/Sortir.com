@@ -2,17 +2,40 @@
 
 {% block body %}
     <main>
-        {{ form_start(createSortieForm) }}
-            {{ form_row(createSortieForm.nom) }}
-            {{ form_row(createSortieForm.dateHeureDebut) }}
-            {{ form_row(createSortieForm.dateLimiteInscription) }}
-            {{ form_row(createSortieForm.nbInscriptionsMax) }}
-            {{ form_row(createSortieForm.duree) }}
-            {{ form_row(createSortieForm.description) }}
-            {{ form_row(createSortieForm.lieu) }}
-            <button type="submit">Créer</button>
-            {{ form_row(createSortieForm._token) }}
-        {{ form_end(createSortieForm) }}
+        <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+            <h1 class="text-center">Créer une sortie</h1>
+        </div>
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(createSortieForm) }}
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.nom) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.dateHeureDebut) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.dateLimiteInscription) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.nbInscriptionsMax) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.duree) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.description) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(createSortieForm.lieu) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Créer</button>
+                        {{ form_row(createSortieForm._token) }}
+                    {{ form_end(createSortieForm) }}
+                </div>
+            </div>
+        </div>
     </main>
 {% endblock %}
 

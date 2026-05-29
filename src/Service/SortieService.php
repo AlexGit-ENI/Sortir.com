@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Enum\EtatSortie;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,10 +16,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class SortieService
 {
 
+    private $sortieRepository;
+
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager){
+    public function __construct(EntityManagerInterface $entityManager, SortieRepository $sortieRepository){
         $this->entityManager = $entityManager;
+        $this->sortieRepository = $sortieRepository;
     }
 
     /**
@@ -57,15 +61,24 @@ class SortieService
             throw new Exception("La date de début de l'évenement est trop lointaine. Maximum: 1 an");
         }
 
-
-        $this->entityManager->persist($sortie);
-        $this->entityManager->flush();
+        $this->persistAndFlush($sortie);
     }
 
     public function persistAndFlush(Sortie $sortie): void
     {
         $this->entityManager->persist($sortie);
         $this->entityManager->flush();
+    }
+    public function findAllAndUpdate(): array {
+        $sorties = $this->sortieRepository->findBy(
+            [],
+            ['dateHeureDebut' => 'DESC'],
+        );
+        foreach ($sorties as $sortie) {
+            $this->updateEtatSortie($sortie);
+            $this->persistAndFlush($sortie);
+        }
+        return $sorties;
     }
 
     public function updateEtatSortie(Sortie $sortie): Sortie{
@@ -141,5 +154,50 @@ class SortieService
         return $sortie;
     }
 
+    public function searchSorties(string $termeRecherche): array
+    {
+        return $this->sortieRepository->searchSortieByTerme(trim(strtolower($termeRecherche)));
+    }
+
+    public function filterSortiesByDate(string $dateMin, string $dateMax): array
+    {
+        return $this->sortieRepository->searchSortiesByDate($dateMin, $dateMax);
+    }
+
+    public function findSortiesNotArchived(array $sorties): array{
+        $sortiesNotArchived = [];
+        foreach ($sorties as $sortie) {
+            $isArchived = $sortie->getEtatSortie() === EtatSortie::ARCHIVED;
+            if (!$isArchived) {
+                $sortiesNotArchived[] = $sortie;
+            }
+        }
+        return $sortiesNotArchived;
+    }
+
+    public function findSortiesRegisteredAt(UserInterface $utilisateur): array
+    {
+        // Je récup toutes les sorties
+        $allSorties = $this->sortieRepository -> findAll();
+
+        $sorties = [];
+
+        /* Méthode pour retourner l'objet Participant correspondant à l'utilisateur alors que le service attend un objet UserInterface
+        https://stackoverflow.com/questions/60550138/get-user-instead-of-userinterface
+         */
+        if(!$utilisateur instanceof Participant){
+            throw new Exception('Expected App\\Entity\\Participant, got '. $utilisateur === null ? 'null' : get_class($utilisateur));
+        }
+        foreach ($allSorties as $sortie) {
+            $isRegistered = in_array($utilisateur, $sortie->getListeParticipants()->toArray());
+            // Je transforme l'attribut listeParticipants de chaque sortie en tableau et cherche si elle comporte l'utilisateur courant
+            if ($isRegistered) {
+                $sorties[] = $sortie;
+            }
+        }
+        return $sorties;
+    }
 }
+
+
 

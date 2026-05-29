@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>{% block title %}Sortir.com{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -11,7 +15,10 @@
 
 {%  for label, messages in app.flashes %}
 {%  for message in messages %}
-    <p class="{{ label }}"> {{  message }}</p>
+    <div class="alert alert-info" role="alert">
+        {{  message }}
+    </div>
+{#    <p class="{{ label }}"> {{  message }}</p>#}
 {% endfor %}
 {% endfor %}
 
@@ -19,6 +26,8 @@
     {% block body %}{% endblock %}
 </main>
 
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

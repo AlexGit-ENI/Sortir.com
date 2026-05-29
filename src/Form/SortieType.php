@@ -7,6 +7,7 @@ use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use DateTime;
+use DateTimeZone;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -21,15 +22,22 @@ class SortieType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Nom de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ]
             ])
             ->add('dateHeureDebut', DateTimeType::class, [
                 'label' => 'Début de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -38,6 +46,9 @@ class SortieType extends AbstractType
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 30,
@@ -46,6 +57,9 @@ class SortieType extends AbstractType
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -55,15 +69,21 @@ class SortieType extends AbstractType
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
                 'label' => 'Nombre d\'inscriptions max',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 1,
+                    'min' => 3,
                     'max' => 50,
                 ]
 
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ]
@@ -72,6 +92,9 @@ class SortieType extends AbstractType
                 'label' => 'Lieu',
                 'class' => Lieu::class,
                 'choice_label' => 'nom',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ]

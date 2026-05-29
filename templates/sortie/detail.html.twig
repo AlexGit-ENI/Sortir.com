@@ -4,68 +4,139 @@
 
 {% block body %}
     <main>
-        <h1>Détail de la sortie</h1>
+        <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+            <h1 class="text-center">Détail de la sortie : {{ sortie.nom }}</h1>
+        </div>
+{# **************************************** **#}
+        <div class="container">
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                <div class="card border-success mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body text-success">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
+                <div class="card border-warning mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body text-warning">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::PAST') %}
+                <div class="card border-secondary mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body text-secondary">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') %}
+                <div class="card border-primary mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body text-primary">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CANCELLED') %}
+                <div class="card border-danger mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body text-danger">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::ARCHIVED') %}
+                <div class="card border-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body">
+            {% endif %}
+            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CURRENT') %}
+                <div class="card border-warning mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Statut</div>
+                    <div class="card-body">
+            {% endif %}
+                        <div class="d-flex" style="justify-content: space-between; align-items: center;">
+                            <h5 class="card-title">{{ sortie.etatSortie.value }}</h5>
+                            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+                                <a role="button" class="btn btn-outline-warning" href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+                                <a role="button" class="btn btn-success" href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
-        <label>Nom de la sortie :</label>
-        <span>{{ sortie.nom }}</span><br>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        Informations
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Début : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</li>
+                        <li class="list-group-item">Fin inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</li>
+                        <li class="list-group-item">Nombre d'inscrit.es : {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
+                        <li class="list-group-item">Durée : {{ sortie.duree }} minutes</li>
+                    </ul>
+                </div>
+                </div>
 
-        <label>Date et heure de la sortie :</label>
-        <span>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</span><br>
+                <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        Description
+                    </div>
+                    <div class="card-body">
+                        <figure>
+                            <blockquote class="blockquote">
+                                <p>{{ sortie.description }}</p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">
+                                Organisé par <cite title="Source Title"><a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></cite> du site de {{ sortie.site.nom }}
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+                </div>
 
-        <label>Date limite de l'inscription :</label>
-        <span>{{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</span><br>
+                <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        Lieu
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Nom du lieu : {{ sortie.lieu.nom }}</li>
+                        <li class="list-group-item">Ville : {{ sortie.lieu.ville.nom }}</li>
+                        <li class="list-group-item">Code postal : {{ sortie.lieu.ville.codePostal }}</li>
+                        <li class="list-group-item">Latitude : {{ sortie.lieu.latitude }}</li>
+                        <li class="list-group-item">Longitude : {{ sortie.lieu.longitude }}</li>
+                    </ul>
+                </div>
+                </div>
 
-        <label>Nombre de places disponibles :</label>
-        <span>{{ sortie.nbInscriptionsMax }}</span><br>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Participants inscrits
+                        </div>
+                        <div class="card-body">
+                            <figure>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Pseudo</th>
+                                        <th>Nom</th>
+                                        <th>Site</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for participant in sortie.listeParticipants %}
+                                        <tr>
+                                            <td>{{ participant.username }}</td>
+                                            <td>{{ participant.prenom }} {{ participant.nom }}</td>
+                                            <td>{{ participant.site.nom }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
 
-        <label>Durée :</label>
-        <span>{{ sortie.duree }} minutes</span><br>
 
-        <label>Description et infos :</label>
-        <span>{{ sortie.description }}</span><br>
+            </div>
+        </div>
+{# **************************************** **#}
 
-        <label>Ville Organisatrice :</label>
-        <span>{{ sortie.lieu.ville.nom }}</span><br>
 
-        <label>Lieu :</label>
-        <span>{{ sortie.lieu.nom }}</span><br>
-
-        <label>Code Postal :</label>
-        <span>{{ sortie.lieu.ville.codePostal }}</span><br>
-
-        <label>Latitude :</label>
-        <span>{{ sortie.lieu.latitude }}</span><br>
-
-        <label>Longitude :</label>
-        <span>{{ sortie.lieu.longitude }}</span><br>
-
-        <label> Etat de la sortie : </label>
-        <span> {{ sortie.etatSortie.value }}</span>
-
-        <br>
-
-        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
-            <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
-            <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
-        {% endif %}
-
-        <h2>Liste des participants inscrits à l'événement :</h2>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Pseudo</th>
-                <th>Nom</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for participant in sortie.listeParticipants %}
-                <tr>
-                    <td>{{ participant.username }}</td>
-                    <td>{{ participant.nom }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
     </main>
 {% endblock %}

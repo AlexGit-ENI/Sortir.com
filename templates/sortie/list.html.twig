@@ -6,57 +6,137 @@
 
     <main>
 
-        <h1>Toutes les sorties à venir</h1>
+        <div class="h4 pb-2 mb-4 text-secondary border-bottom border-secondary" style="margin-top: 1rem">
+            <h1 class="text-center">Toutes les sorties</h1>
+        </div>
 
-        <!-- filtre par site -->
-        {# ajouter un bouton HTML simple au lieu d'un créé avec le fomr pour qu'il ne figure pas dans l'URL  #}
-        {{ form_start(siteSelectForm) }}
-        {{ form_row(siteSelectForm.site) }}
-        <button type="submit">Rechercher</button>
-        {{ form_end(siteSelectForm) }}
+        <div class="container">
+            <div class="container" style="margin: 2rem">
+                <h2>Filter les sorties par : </h2>
+                {{ form_start(filterSortieListForm) }}
+                <div class="row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="container">
+                            {{ form_row(filterSortieListForm.site) }}
+                            {{ form_row(filterSortieListForm.search) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="container">
+                            {{ form_row(filterSortieListForm.dateMin) }}
+                            {{ form_row(filterSortieListForm.dateMax) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="container">
+                            {{ form_row(filterSortieListForm.checkboxes) }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="container d-flex justify-content-center align-items-center" style="height: 100%">
+                            <button type="submit" class="btn btn-outline-primary">Rechercher</button>
+                        </div>
+                    </div>
+                {{ form_end(filterSortieListForm) }}
+                </div>
+            </div>
+                <!-- filtre par site -->
+{#            {{ form_start(filterSortieListForm) }}#}
+{#                {{ form_row(filterSortieListForm.site) }}#}
+{#                {{ form_row(filterSortieListForm.search) }}#}
+{#                {{ form_row(filterSortieListForm.dateMin) }}#}
+{#                {{ form_row(filterSortieListForm.dateMax) }}#}
+{#                {{ form_row(filterSortieListForm.checkboxes) }}#}
+{#                <button type="submit" class="btn btn-outline-primary">Rechercher</button>#}
+{#            {{ form_end(filterSortieListForm) }}#}
 
-        <div id="sortie-list">
+
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
             {% if sorties %}
                 {% for sortie in sorties %}
-
-                    <article class="sortie-article">
-                        <h2>{{ sortie.nom }}</h2>
-                        <div class="sortie-meta">
-                            <p><i>📆 </i><time>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</time></p>
-                            <p><i>⏱️ </i>Durée : {{ sortie.duree }} minutes</p>
-                            <p>Organisé par le site de : {{ sortie.site.nom }} - Organisateur : <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></p>
-                            <p>Lieu : {{ sortie.lieu.nom }}</p>
-                            <p>Ville : {{ sortie.lieu.ville.nom }}</p>
-                            <p> Inscriptions : {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</p>
-                        </div>
-                        <p>{{ sortie.description }}</p>
-                        <p> Statut :  {{ sortie.etatSortie.value }}</p>
-
-                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
-                            {% if not (app.user in sortie.listeParticipants) %}
-                                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
-                                    <a href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire ici</a>
+            <div class="col">
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                    <div class="card text-center w-100 border border-success">
+                        <div class="card-header bg-opacity-10 bg-success">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::PAST') %}
+                    <div class="card text-center w-100 border border-dark">
+                        <div class="card-header bg-opacity-10 bg-dark">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CANCELLED') %}
+                    <div class="card text-center w-100 border border-danger">
+                        <div class="card-header bg-opacity-10 bg-danger">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
+                    <div class="card text-center w-100 border border-warning">
+                        <div class="card-header bg-opacity-10 bg-warning">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') %}
+                    <div class="card text-center w-100 border border-primary">
+                        <div class="card-header bg-opacity-10 bg-primary">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::ARCHIVED') %}
+                    <div class="card text-center w-100 border border-dark">
+                        <div class="card-header bg-opacity-10 bg-dark">
+                {% endif %}
+                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CURRENT') %}
+                    <div class="card text-center w-100 border border-info">
+                        <div class="card-header bg-opacity-10 bg-info">
+                {% endif %}
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="true" href="{{ path('sorties_detail', {'id': sortie.id}) }}">Detail</a>
+                                </li>
+                                {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
+                                </li>
                                 {% endif %}
-                            {% else %}
-                                <a href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister ici</a>
+                                <li class="nav-item">
+                                    <a class="nav-link disabled" aria-disabled="true">{{ sortie.etatSortie.value }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ sortie.nom }}</h5>
+
+
+                            <p class="card">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><i class="fa-solid fa-flag-checkered"></i> {{ sortie.dateHeureDebut | date('d/m/Y H:i') }} - <i class="fa-solid fa-hourglass-half"></i> {{ sortie.duree }} minutes</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-location-dot"></i> {{ sortie.lieu.nom }} - <i class="fa-solid fa-city"></i> {{ sortie.lieu.ville.nom }}</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-user-graduate"></i> <a href="{{ path('participant_detail', {id : sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a> - <i class="fa-solid fa-school"></i> {{ sortie.site.nom }}</li>
+                                    <li class="list-group-item"><i class="fa-solid fa-users"></i> {{ sortie.listeParticipants|length }} / {{ sortie.nbInscriptionsMax }}</li>
+                                </ul>
+                                <div class="card-footer">
+                                    <i class="fa-solid fa-bell"></i> {{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}
+                                </div>
+                            </p>
+
+
+                            {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') %}
+                                {% if not (app.user in sortie.listeParticipants) %}
+                                    {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') %}
+                                        <a class="btn btn-primary" href="{{ path('sorties_inscription', {'id': sortie.id}) }}">S'inscrire</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a class="btn btn-danger" href="{{ path('sorties_desister', {'id': sortie.id}) }}">Se désister</a>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                        {% if app.user == sortie.organisateur
-                            and sortie.etatSortie != constant('App\\Enum\\EtatSortie::CURRENT')
-                            and sortie.etatSortie != constant('App\\Enum\\EtatSortie::CANCELLED') %}
-                            <a href="{{ path('sorties_annuler', {'id': sortie.id}) }}">Annuler la sortie</a>
-                        {% endif %}
-                        {% if sortie.etatSortie == constant('App\\Enum\\EtatSortie::CREATED') and app.user == sortie.organisateur %}
-                            <a href="{{ path('sorties_update', {'id': sortie.id}) }}">Modifier</a>
-                            <a href="{{ path('sorties_open', {'id': sortie.id}) }}">Publier</a>
-                        {% endif %}
-                        <a href="{{ path('sorties_detail', {'id': sortie.id}) }}">Détail de la sortie</a>
-
-                    </article>
-
+                            {% if app.user.username == sortie.organisateur.username and (sortie.etatSortie == constant('App\\Enum\\EtatSortie::OPEN') or sortie.etatSortie == constant('App\\Enum\\EtatSortie::CLOSED') ) %}
+                                <a class="btn btn-outline-danger" href="{{ path('sorties_annuler', {'id': sortie.id}) }}">Annuler</a>
+                            {% endif %}
+                        </div>
+                    </div>
+            </div>
                 {% endfor %}
-            {% else %}
-                <p>Aucune sortie n'a été trouvée</p>
             {% endif %}
 
+        </div>
+    </div>
+    </main>
 {% endblock %}
