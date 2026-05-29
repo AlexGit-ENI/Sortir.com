@@ -54,7 +54,7 @@ class FilterSortieListType extends AbstractType
                     'class' => 'form-label',
                 ],
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-select',
                 ]
             ])
             ->add('search', SearchType::class, [
@@ -74,7 +74,7 @@ class FilterSortieListType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'required' => false,
-                'data' => $today,
+
                 'label_attr' => [
                     'class' => 'form-label',
                 ],
@@ -88,7 +88,7 @@ class FilterSortieListType extends AbstractType
                     'class' => 'form-label',
                 ],
                 'required' => false,
-                'data' => $today,
+
             ])
             ->add('checkboxes', ChoiceType::class, [
                 'label' => 'Je filtre par : ',
